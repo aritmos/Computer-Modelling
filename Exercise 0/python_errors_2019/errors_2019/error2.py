@@ -8,5 +8,5 @@ numbers = list(range(10))
 print(numbers)
 
 for n in numbers:
-    if n = mynum:
+    if n == mynum:
         print("Found my number: ", mynum)

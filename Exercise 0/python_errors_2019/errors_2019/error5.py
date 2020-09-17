@@ -11,11 +11,11 @@ numbers = [random.randint(0,100) for n in range(20)]
 print("Original list:")
 print(numbers)
 
-for i in range(len(numbers)):
-    # if remainder of division by 2 is zero, delete list entry
-    if numbers[i]%2==0:
-        del numbers[i]
+#index loops and deleting entries doesn't mix well
+#for small arrays its fine to create a new filtered array
+#for example through list comprehension 
+odd_numbers = [i for i in numbers if i%2!=0]
 
-# Print the remaining list with all odd numbers
 print("Odd entries:")
-print(numbers)
+print(odd_numbers)
+
