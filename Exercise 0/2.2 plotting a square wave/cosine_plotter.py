@@ -17,7 +17,7 @@ def main():
     n_loop = 100
 
     # open output file
-    out_file = open("cosine.dat","w")
+    out_file = open("Plotting a square wave/cosine.dat","w")
 
     # prepare data lists
     x_values = []
