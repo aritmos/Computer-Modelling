@@ -20,12 +20,15 @@ def main():
     # these should be an integer and a path to the output file
     n = len(sys.argv)
     if n!=3:
-        raise TypeError(f'Program takes 2 positional arguments but {n-1} were given')
+        print(f'IndexError:\nProgram takes 2 positional arguments but {n-1} were given')
+        sys.exit(-1)
     if sys.argv[1].isnumeric()==False or sys.argv[2].count('.')!=1:
-        raise TypeError("""
-    Program takes an 2 positional arguments
-    these are of type "int" and "str" respectively
-    where the "str" parameter must be a path""")
+        print("""
+    TypeError:
+    Program takes 2 positional arguments
+    of type "int" and "str" respectively.
+    The "str" parameter must be a path""")
+        sys.exit(-1)
 
     N = int(sys.argv[1])
     # number of data points
