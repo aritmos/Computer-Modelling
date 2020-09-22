@@ -98,3 +98,4 @@ def div(c1, c2):
     return scale(z,1.0/norm_sq(c2))
 
 
+
