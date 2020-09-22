@@ -1,7 +1,7 @@
 """
 
 CMod Exercise 1: vector.py, a module that provides a set of functions to
-manipulate vector, expressed as lists.
+manipulate vectors, expressed as lists.
 
 Author: Sebastian Garcia
 Version: 09/2020
@@ -39,6 +39,7 @@ def scalar_mult(v, scalar):
   """
   return [i*scalar for i in v]
 
+
 def scalar_div(v,scalar):
   """
   Division of vector by scalar
@@ -48,6 +49,7 @@ def scalar_div(v,scalar):
   :return: scaled vector [v1/scalar,..., vn/scalar]
   """
   return scalar_mult(v,1/scalar)
+
 
 def add(v, w):
   """
@@ -60,6 +62,7 @@ def add(v, w):
   if len(v)==len(w):
     return [i+j for i,j in zip(v,w)] 
   raise Exception('Dimension Mismatch')
+
 
 def sub(v, w):
   """
@@ -96,6 +99,7 @@ def cross_product(v, w):
   if len(v) == len(w) == 3:
     return [v[1]*w[2]-v[2]*w[1],-v[0]*w[2]+v[2]*w[0],v[0]*w[1]-v[1]*w[0]]
   raise Exception('Dimension Error')
+
 
 def equal(v,w):
   """
