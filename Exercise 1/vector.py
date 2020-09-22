@@ -67,7 +67,7 @@ def sub(v, w):
   
   :param v: first vector
   :param w: second vector
-  :return: complex difference v-w
+  :return: difference v-w
   """
   return add(v,scalar_mult(w,-1))
 
@@ -91,7 +91,7 @@ def cross_product(v, w):
   
   :param v: first vector
   :param w: second vector
-  :return: vxw only if both vectors have dimension = 3
+  :return: v x w only if both vectors have dimension 3
   """
   if len(v) == len(w) == 3:
     return [v[1]*w[2]-v[2]*w[1],-v[0]*w[2]+v[2]*w[0],v[0]*w[1]-v[1]*w[0]]
@@ -104,5 +104,4 @@ def equal(v,w):
   :param w: second vector
   :return: True if v==w given a specific tolerance
   """
-
   return all(abs(i-j)<min(abs(i)*10**-10,abs(j)*10**-10) for i,j in zip(v,w))

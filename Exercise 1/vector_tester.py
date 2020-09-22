@@ -1,6 +1,6 @@
 """
 CMod Exercise 1: Tester of the vector.py module.
-Creates a triplet of random vectors (in R^3) and
+Creates a triplet of random vectors (in R^3) then
 runs through functions implemented in vector.py and
 checks vector identities
 
@@ -36,6 +36,4 @@ def main():
 
   ''')
 # Execute main method, but only if it is invoked directly
-if __name__ == "__main__":
-    main()
- 
+if __name__ == "__main__": main()
