@@ -18,6 +18,10 @@ def main():
   v = {v}
   w = {w}
 
+  ||u|| = {vec.norm(u)}
+  ||v|| = {vec.norm(v)}
+  ||w|| = {vec.norm(w)}
+
   u + v = {vec.add(u,v)}
   u * v = {vec.dot_product(u,v)}
   u x v = {vec.cross_product(u,v)}
