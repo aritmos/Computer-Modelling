@@ -43,7 +43,7 @@ class Particle3D(object):
     com_velocity - computes total mass and CoM velocity of a p3d list
     """
 
-    def __init__(self, label, mass, pos, vel):
+    def __init__(self, label:str, mass:float, pos:list, vel:list) -> None:
         """
         Initialises a particle in 3D space
 
@@ -52,11 +52,14 @@ class Particle3D(object):
         :param position: [3] float array w/ position
         :param velocity: [3] float array w/ velocity
         """
-        CODE
+        self.label = label
+        self.mass  = mass
+        self.pos   = np.array(pos)
+        self.vel   = np.array(vel)
 
 
     @staticmethod
-    def new_particle(input_handle):
+    def new_particle(input_handle:str) -> None:
         """
         Initialises a Particle3D instance given an input file handle.
         
@@ -67,69 +70,69 @@ class Particle3D(object):
 
         :return Particle3D instance
         """
-        CODE
-        return Particle3D()
+        split = input_handle.split(' ')
+        values = [split[0]] + [float(i) for i in split[1:]]
+        # Check there are the correct number of items to create a particle
+        if len(values)!=8: raise TypeError(f'new_particle(input):\n input must be constructed by 8 space separated values\n{len(values)} were given')
+
+        return Particle3D(values[0],values[1],values[2:5],values[5:])
 
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         XYZ-compliant string. The format is
         <label>    <x>  <y>  <z>
         """
-        CODE
-        return xyz_string
+        return f'{self.label} {" ".join([str(i) for i in self.pos])}'
 
 
-    def kinetic_e(self):
+    def kinetic_e(self) -> float:
         """
         Returns the kinetic energy of a Particle3D instance
 
         :return ke: float, 1/2 m v**2
         """
-        CODE
-        return ???
+        return 0.5*self.mass*np.sum(self.vel**2)
 
 
-    def momentum(self):
+    def momentum(self) -> np.ndarray:
         """
         Returns the linear momentum of a Particle3D instance
         :return p: (3) float np.array, m*v
         """
-        CODE
-        return ???
+        return self.mass*self.vel
 
 
-    def update_pos_1st(self, dt):
+    def update_pos_1st(self, dt:float) -> None:
         """
         1st order position update
 
         :param dt: timestep
         """
-        CODE
+        self.pos = self.pos + dt*self.vel
 
 
-    def update_pos_2nd(self, dt, force):
+    def update_pos_2nd(self, dt:float, force:np.ndarray) -> None:
         """
         2nd order position update
 
         :param dt: timestep
         :param force: [3] float array, the total force acting on the particle
         """
-        CODE
+        self.pos = self.pos + dt*self.vel + (dt**2)*force/(2*self.mass)
 
-
-    def update_vel(self, dt, force):
+    def update_vel(self, dt: float, force: np.ndarray):
         """
         Velocity update
 
         :param dt: timestep
         :param force: [3] float array, the total force acting on the particle
         """
-        CODE
+        self.vel =  self.vel + dt*force/(self.mass)
 
 
     @staticmethod
-    def sys_kinetic(p3d_list):
+    def sys_kinetic(p3d_list:list) -> float:
         """
         Returns the kinetic energy of the whole system
 
@@ -137,12 +140,11 @@ class Particle3D(object):
 
         :return sys_ke: \sum 1/2 m_i v_i^2 
         """
-        CODE
-        return sys_ke
+        return sum([particle.kinetic_e() for particle in p3d_list])
 
 
     @staticmethod
-    def com_velocity( p3d_list ):
+    def com_velocity( p3d_list:list ) -> tuple:
         """
         Computes the total mass and CoM velocity of a list of P3D's
 
@@ -150,11 +152,5 @@ class Particle3D(object):
         :return total_mass: The total mass of the system 
         :return com_vel: Centre-of-mass velocity
         """
-        CODE
-        return total_mass, com_vel
-
-
-
-
-
-
+        M = sum([particle.mass for particle in p3d_list])
+        return M, sum([particle.momentum() for particle in p3d_list])/M

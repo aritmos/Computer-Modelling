@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module particle3D</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>particle3D</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:d%3A%5Cfiles%5Cgithub%5Ccomputer-modelling%5Cexercise%202%5Cparticle3d.py">d:\files\github\computer-modelling\exercise 2\particle3d.py</a></font></td></tr></table>
+    <p><tt>&nbsp;CompMod&nbsp;Ex2:&nbsp;<a href="#Particle3D">Particle3D</a>,&nbsp;a&nbsp;class&nbsp;to&nbsp;describe&nbsp;point&nbsp;particles&nbsp;in&nbsp;3D&nbsp;space<br>
+&nbsp;<br>
+&nbsp;An&nbsp;instance&nbsp;describes&nbsp;a&nbsp;particle&nbsp;in&nbsp;Euclidean&nbsp;3D&nbsp;space:&nbsp;<br>
+&nbsp;velocity&nbsp;and&nbsp;position&nbsp;are&nbsp;[3]&nbsp;arrays<br>
+&nbsp;<br>
+&nbsp;Includes&nbsp;time&nbsp;integrator&nbsp;methods&nbsp;+...<br>
+&nbsp;<br>
+author:&nbsp;---------------</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="particle3D.html#Particle3D">Particle3D</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Particle3D">class <strong>Particle3D</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Particle3D">Particle3D</a>(label:&nbsp;str,&nbsp;mass:&nbsp;float,&nbsp;pos:&nbsp;list,&nbsp;vel:&nbsp;list)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+Class&nbsp;to&nbsp;describe&nbsp;point-particles&nbsp;in&nbsp;3D&nbsp;space<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Properties:<br>
+label:&nbsp;name&nbsp;of&nbsp;the&nbsp;particle<br>
+mass:&nbsp;mass&nbsp;of&nbsp;the&nbsp;particle<br>
+pos:&nbsp;position&nbsp;of&nbsp;the&nbsp;particle<br>
+vel:&nbsp;velocity&nbsp;of&nbsp;the&nbsp;particle<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Methods:<br>
+__init__<br>
+__str__<br>
+kinetic_e&nbsp;&nbsp;-&nbsp;computes&nbsp;the&nbsp;kinetic&nbsp;energy<br>
+momentum&nbsp;-&nbsp;computes&nbsp;the&nbsp;linear&nbsp;momentum<br>
+update_pos_1st&nbsp;-&nbsp;updates&nbsp;the&nbsp;position&nbsp;to&nbsp;1st&nbsp;order<br>
+update_pos_2nd&nbsp;-&nbsp;updates&nbsp;the&nbsp;position&nbsp;to&nbsp;2nd&nbsp;order<br>
+update_vel&nbsp;-&nbsp;updates&nbsp;the&nbsp;velocity<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Static&nbsp;Methods:<br>
+new_particle&nbsp;-&nbsp;initializes&nbsp;a&nbsp;P3D&nbsp;instance&nbsp;from&nbsp;a&nbsp;file&nbsp;handle<br>
+sys_kinetic&nbsp;-&nbsp;computes&nbsp;total&nbsp;K.E.&nbsp;of&nbsp;a&nbsp;p3d&nbsp;list<br>
+com_velocity&nbsp;-&nbsp;computes&nbsp;total&nbsp;mass&nbsp;and&nbsp;CoM&nbsp;velocity&nbsp;of&nbsp;a&nbsp;p3d&nbsp;list<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Particle3D-__init__"><strong>__init__</strong></a>(self, label: str, mass: float, pos: list, vel: list) -&gt; None</dt><dd><tt>Initialises&nbsp;a&nbsp;particle&nbsp;in&nbsp;3D&nbsp;space<br>
+&nbsp;<br>
+:param&nbsp;label:&nbsp;String&nbsp;w/&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;particle<br>
+:param&nbsp;mass:&nbsp;float,&nbsp;mass&nbsp;of&nbsp;the&nbsp;particle<br>
+:param&nbsp;position:&nbsp;[3]&nbsp;float&nbsp;array&nbsp;w/&nbsp;position<br>
+:param&nbsp;velocity:&nbsp;[3]&nbsp;float&nbsp;array&nbsp;w/&nbsp;velocity</tt></dd></dl>
+
+<dl><dt><a name="Particle3D-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><tt>XYZ-compliant&nbsp;string.&nbsp;The&nbsp;format&nbsp;is<br>
+&lt;label&gt;&nbsp;&nbsp;&nbsp;&nbsp;&lt;x&gt;&nbsp;&nbsp;&lt;y&gt;&nbsp;&nbsp;&lt;z&gt;</tt></dd></dl>
+
+<dl><dt><a name="Particle3D-kinetic_e"><strong>kinetic_e</strong></a>(self) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;kinetic&nbsp;energy&nbsp;of&nbsp;a&nbsp;<a href="#Particle3D">Particle3D</a>&nbsp;instance<br>
+&nbsp;<br>
+:return&nbsp;ke:&nbsp;float,&nbsp;1/2&nbsp;m&nbsp;v**2</tt></dd></dl>
+
+<dl><dt><a name="Particle3D-momentum"><strong>momentum</strong></a>(self) -&gt; numpy.ndarray</dt><dd><tt>Returns&nbsp;the&nbsp;linear&nbsp;momentum&nbsp;of&nbsp;a&nbsp;<a href="#Particle3D">Particle3D</a>&nbsp;instance<br>
+:return&nbsp;p:&nbsp;(3)&nbsp;float&nbsp;np.array,&nbsp;m*v</tt></dd></dl>
+
+<dl><dt><a name="Particle3D-update_pos_1st"><strong>update_pos_1st</strong></a>(self, dt: float) -&gt; None</dt><dd><tt>1st&nbsp;order&nbsp;position&nbsp;update<br>
+&nbsp;<br>
+:param&nbsp;dt:&nbsp;timestep</tt></dd></dl>
+
+<dl><dt><a name="Particle3D-update_pos_2nd"><strong>update_pos_2nd</strong></a>(self, dt: float, force: numpy.ndarray) -&gt; None</dt><dd><tt>2nd&nbsp;order&nbsp;position&nbsp;update<br>
+&nbsp;<br>
+:param&nbsp;dt:&nbsp;timestep<br>
+:param&nbsp;force:&nbsp;[3]&nbsp;float&nbsp;array,&nbsp;the&nbsp;total&nbsp;force&nbsp;acting&nbsp;on&nbsp;the&nbsp;particle</tt></dd></dl>
+
+<dl><dt><a name="Particle3D-update_vel"><strong>update_vel</strong></a>(self, dt: float, force: numpy.ndarray)</dt><dd><tt>Velocity&nbsp;update<br>
+&nbsp;<br>
+:param&nbsp;dt:&nbsp;timestep<br>
+:param&nbsp;force:&nbsp;[3]&nbsp;float&nbsp;array,&nbsp;the&nbsp;total&nbsp;force&nbsp;acting&nbsp;on&nbsp;the&nbsp;particle</tt></dd></dl>
+
+<hr>
+Static methods defined here:<br>
+<dl><dt><a name="Particle3D-com_velocity"><strong>com_velocity</strong></a>(p3d_list: list) -&gt; tuple</dt><dd><tt>Computes&nbsp;the&nbsp;total&nbsp;mass&nbsp;and&nbsp;CoM&nbsp;velocity&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;P3D's<br>
+&nbsp;<br>
+:param&nbsp;p3d_list:&nbsp;list&nbsp;in&nbsp;which&nbsp;each&nbsp;item&nbsp;is&nbsp;a&nbsp;P3D&nbsp;instance<br>
+:return&nbsp;total_mass:&nbsp;The&nbsp;total&nbsp;mass&nbsp;of&nbsp;the&nbsp;system&nbsp;<br>
+:return&nbsp;com_vel:&nbsp;Centre-of-mass&nbsp;velocity</tt></dd></dl>
+
+<dl><dt><a name="Particle3D-new_particle"><strong>new_particle</strong></a>(input_handle: str) -&gt; None</dt><dd><tt>Initialises&nbsp;a&nbsp;<a href="#Particle3D">Particle3D</a>&nbsp;instance&nbsp;given&nbsp;an&nbsp;input&nbsp;file&nbsp;handle.<br>
+&nbsp;<br>
+The&nbsp;input&nbsp;file&nbsp;should&nbsp;contain&nbsp;one&nbsp;per&nbsp;planet&nbsp;in&nbsp;the&nbsp;following&nbsp;format:<br>
+label&nbsp;&nbsp;&nbsp;&lt;mass&gt;&nbsp;&nbsp;&lt;x&gt;&nbsp;&lt;y&gt;&nbsp;&lt;z&gt;&nbsp;&nbsp;&nbsp;&nbsp;&lt;vx&gt;&nbsp;&lt;vy&gt;&nbsp;&lt;vz&gt;<br>
+&nbsp;<br>
+:param&nbsp;inputFile:&nbsp;Readable&nbsp;file&nbsp;handle&nbsp;in&nbsp;the&nbsp;above&nbsp;format<br>
+&nbsp;<br>
+:return&nbsp;<a href="#Particle3D">Particle3D</a>&nbsp;instance</tt></dd></dl>
+
+<dl><dt><a name="Particle3D-sys_kinetic"><strong>sys_kinetic</strong></a>(p3d_list: list) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;kinetic&nbsp;energy&nbsp;of&nbsp;the&nbsp;whole&nbsp;system<br>
+&nbsp;<br>
+:param&nbsp;p3d_list:&nbsp;list&nbsp;in&nbsp;which&nbsp;each&nbsp;item&nbsp;is&nbsp;a&nbsp;P3D&nbsp;instance<br>
+&nbsp;<br>
+:return&nbsp;sys_ke:&nbsp;\sum&nbsp;1/2&nbsp;m_i&nbsp;v_i^2</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ASTRO_U</strong> = 149597870700.0<br>
+<strong>G0</strong> = 6.67384e-11<br>
+<strong>YEAR</strong> = 31557600.0</td></tr></table>
+</body></html>
