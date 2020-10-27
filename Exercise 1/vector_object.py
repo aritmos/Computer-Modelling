@@ -1,7 +1,7 @@
 """
 CMod Exercise 1: Vector class that mimics numpy's built-in
-functionalities including operator overloading (except for *)
-only using dunder methods.
+functionalities including operator overloading 
+* This class only uses dunder methods (hence why 'dim' and 'norm' are attributes)
 
 Note: for two vectors 'u','v' and a scalar 'b':
   the scalar prodcut is defined as: b*u or u*b
@@ -11,7 +11,7 @@ Note: for two vectors 'u','v' and a scalar 'b':
 Author: Sebastian Garcia
 Version: 09/2020
 """
-import math 
+import math as m
 
 class vector():
   def __init__(self,values):
@@ -20,16 +20,17 @@ class vector():
     :param values: list of the components of the vector
     :attribute values: list of the components of the vector
     :attribute dim: dimension of the vector
+    :attribute norm: the norm of the vector
     """
     self.values = values
     self.dim = len(self.values)
-    self.norm = math.sqrt(sum(i**2 for i in self.values))
+    self.norm = m.sqrt(sum(i**2 for i in self.values))
 
   def __add__(self,other):
     """
     :param self: vector
     :param other: other vector
-    :return: a vector whose components are the sum of self and other
+    :return: vector whose components [self + other]
     """
     if self.dim==other.dim:
       new_values = [i+j for i,j in zip(self.values,other.values)]
@@ -40,7 +41,7 @@ class vector():
     """
     :param self: vector
     :param other: other vector
-    :return: a vector whose components are the subtraction of self and other
+    :return: vector with components [self - other]
     """
     return self+(other*(-1))
 

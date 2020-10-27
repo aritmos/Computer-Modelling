@@ -28,7 +28,7 @@ def main():
 
   Testing Vector Identities:
   {np.cross(u,v)} = {np.cross(-v,u)}
-  {np.cross(u,v+w)}={np.cross(u,v)+np.cross(u,w)}
+  {np.cross(u,v+w)} = {np.cross(u,v)+np.cross(u,w)}
   {np.cross(u,np.cross(v,w))} = {np.inner(u,w)*v-np.inner(u,v)*w}
 
   Testing equality for the last vector identity:
@@ -39,5 +39,3 @@ def main():
 # Execute main method, but only if it is invoked directly
 if __name__ == "__main__":
   main()
-
-

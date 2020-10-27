@@ -1,13 +1,17 @@
 """
-CMod Exercise 1: Tester of the vector.py module.
-Creates a triplet of random vectors (in R^3) then
-runs through functions implemented in vector.py and
-checks vector identities
+CMod Exercise 1: Tester of the vector_object.py module which only uses dunder methods.
+Creates a triplet of random vectors (in R^3) then runs through functions implemented
+in vector_object.py and checks known vector identities
+
+Note: for two vectors 'u','v' and a scalar 'b':
+  the scalar prodcut is defined as: b*u or u*b
+  the inner product is defined as: u*v
+  the cross product is defined as: u%v
 
 Author: Sebastian Garcia
 Version: 09/2020
 """
-import math
+
 import random
 import vector_object as vec
 

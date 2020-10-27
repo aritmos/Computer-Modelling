@@ -2,12 +2,11 @@
 CMod Exercise 1: Tester of the vector.py module.
 Creates a triplet of random vectors (in R^3) then
 runs through functions implemented in vector.py and
-checks vector identities
+checks known vector identities
 
 Author: Sebastian Garcia
 Version: 09/2020
 """
-import math 
 import random
 import vector as vec
 
@@ -35,5 +34,6 @@ def main():
   {vec.equal(vec.cross_product(u,vec.cross_product(v,w)),vec.sub(vec.scalar_mult(v,vec.dot_product(u,w)),vec.scalar_mult(w,vec.dot_product(u,v))))}
 
   ''')
+
 # Execute main method, but only if it is invoked directly
 if __name__ == "__main__": main()

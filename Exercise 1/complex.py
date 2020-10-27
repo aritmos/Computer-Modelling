@@ -1,6 +1,6 @@
 """
 
-CMod Ex. 2: complex.py, a module that provides a set of functions to
+CMod Exercise 1: complex.py, a module that provides a set of functions to
 manipulate complex numbers, expressed as lists.
 
 Author: A. Hermann

@@ -1,5 +1,5 @@
 """
-CMod Ex2: tester of the complex.py module.
+CMod Ex1: tester of the complex.py module.
 Creates a pair of random complex numbers and
 runs through all functions implemented in complex.py
 
