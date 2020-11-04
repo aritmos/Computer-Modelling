@@ -6,17 +6,11 @@
 
  Includes time integrator methods +...
 
-author: ---------------
+author: Sebastian Garcia
 
 """
-import math
+
 import numpy as np
-
-# Constants should go here
-G0 = 6.67384E-11            # From CODATA 2010
-ASTRO_U = 149597870700.0    # From IAU resolution 2012/08 B2
-YEAR = float(3.15576e7)     # Julian year = 365.25 days
-
 
 class Particle3D(object):
     """
@@ -43,7 +37,7 @@ class Particle3D(object):
     com_velocity - computes total mass and CoM velocity of a p3d list
     """
 
-    def __init__(self, label:str, mass:float, pos:list, vel:list) -> None:
+    def __init__(self, label: str, mass: float, pos: list, vel: list) -> None:
         """
         Initialises a particle in 3D space
 
@@ -59,22 +53,22 @@ class Particle3D(object):
 
 
     @staticmethod
-    def new_particle(input_handle:str) -> None:
+    def new_particle(input: str) -> object:
         """
         Initialises a Particle3D instance given an input file handle.
         
-        The input file should contain one per planet in the following format:
-        label   <mass>  <x> <y> <z>    <vx> <vy> <vz>
+        The input file should contain one particle per line in the following format:
+        <label> <mass> <x> <y> <z> <vx> <vy> <vz>
         
         :param inputFile: Readable file handle in the above format
-
+        :param safe: Default to False. If True check for correct types in input
         :return Particle3D instance
         """
-        split = input_handle.split(' ')
-        values = [split[0]] + [float(i) for i in split[1:]]
+        split = input.split(' ')
+        try: values = [split[0]] + [float(i) for i in split[1:]]
+        except: raise TypeError
         # Check there are the correct number of items to create a particle
-        if len(values)!=8: raise TypeError(f'new_particle(input):\n input must be constructed by 8 space separated values\n{len(values)} were given')
-
+        if len(values)!=8: raise IndexError #(f'new_particle(input):\n input must be constructed by 8 space separated values\n{len(values)} were given')
         return Particle3D(values[0],values[1],values[2:5],values[5:])
 
 
@@ -121,7 +115,7 @@ class Particle3D(object):
         """
         self.pos = self.pos + dt*self.vel + (dt**2)*force/(2*self.mass)
 
-    def update_vel(self, dt: float, force: np.ndarray):
+    def update_vel(self, dt: float, force: np.ndarray) -> None:
         """
         Velocity update
 
@@ -132,19 +126,18 @@ class Particle3D(object):
 
 
     @staticmethod
-    def sys_kinetic(p3d_list:list) -> float:
+    def sys_kinetic(p3d_list: list) -> float:
         """
         Returns the kinetic energy of the whole system
 
-        :param p3d_list: list in which each item is a P3D instance
-
-        :return sys_ke: \sum 1/2 m_i v_i^2 
+        :param p3d_list: list of P3D instances
+        :return sys_ke: total kinetic energy of the system
         """
         return sum([particle.kinetic_e() for particle in p3d_list])
 
 
     @staticmethod
-    def com_velocity( p3d_list:list ) -> tuple:
+    def com_velocity(p3d_list: list ) -> tuple:
         """
         Computes the total mass and CoM velocity of a list of P3D's
 

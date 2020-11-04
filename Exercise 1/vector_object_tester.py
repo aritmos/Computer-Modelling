@@ -8,7 +8,7 @@ Note: for two vectors 'u','v' and a scalar 'b':
   the inner product is defined as: u*v
   the cross product is defined as: u%v
 
-Author: Sebastian Garcia
+Author: Sebastian Garcia (s1910157)
 Version: 09/2020
 """
 

@@ -4,7 +4,7 @@ Creates a triplet of random vectors (in R^3) then
 runs through functions implemented in vector.py and
 checks known vector identities
 
-Author: Sebastian Garcia
+Author: Sebastian Garcia (s1910157)
 Version: 09/2020
 """
 import random

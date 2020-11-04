@@ -2,7 +2,7 @@
 CMod Exercise 1: vector.py, a module that provides a set of functions to
 manipulate vectors, expressed as lists of their components.
 
-Author: Sebastian Garcia
+Author: Sebastian Garcia (s1910157)
 Version: 10/2020
 """
 import math as m

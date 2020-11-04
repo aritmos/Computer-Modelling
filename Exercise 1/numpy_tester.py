@@ -5,7 +5,7 @@ Creates a triplet of random vectors (in R^3) then
 runs through functions implemented in numpy and
 checks vector identities
 
-Author: Sebastian Garcia
+Author: Sebastian Garcia (s1910157)
 Version: 09/2020
 """
 import numpy as np

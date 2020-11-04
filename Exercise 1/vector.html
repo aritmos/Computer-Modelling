@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module vector</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>vector</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:d%3A%5Cfiles%5Cgithub%5Ccomputer-modelling%5Cexercise%201%5Cvector.py">d:\files\github\computer-modelling\exercise 1\vector.py</a></font></td></tr></table>
+    <p><tt>CMod&nbsp;Exercise&nbsp;1:&nbsp;vector.py,&nbsp;a&nbsp;module&nbsp;that&nbsp;provides&nbsp;a&nbsp;set&nbsp;of&nbsp;functions&nbsp;to<br>
+manipulate&nbsp;vectors,&nbsp;expressed&nbsp;as&nbsp;lists&nbsp;of&nbsp;their&nbsp;components.<br>
+&nbsp;<br>
+Author:&nbsp;Sebastian&nbsp;Garcia&nbsp;(s1910157)<br>
+Version:&nbsp;10/2020</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-add"><strong>add</strong></a>(v: list, w: list) -&gt; list</dt><dd><tt>Vector&nbsp;addition<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;first&nbsp;vector<br>
+:param&nbsp;w:&nbsp;second&nbsp;vector<br>
+:return:&nbsp;vector&nbsp;sum&nbsp;v+w</tt></dd></dl>
+ <dl><dt><a name="-cross_product"><strong>cross_product</strong></a>(v: list, w: list) -&gt; list</dt><dd><tt>Vector&nbsp;cross&nbsp;product<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;first&nbsp;vector<br>
+:param&nbsp;w:&nbsp;second&nbsp;vector<br>
+:return:&nbsp;v&nbsp;x&nbsp;w&nbsp;only&nbsp;if&nbsp;both&nbsp;vectors&nbsp;have&nbsp;dimension&nbsp;3</tt></dd></dl>
+ <dl><dt><a name="-dot_product"><strong>dot_product</strong></a>(v: list, w: list) -&gt; float</dt><dd><tt>Vector&nbsp;dot&nbsp;product<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;first&nbsp;vector<br>
+:param&nbsp;w:&nbsp;second&nbsp;vector<br>
+:return:&nbsp;dot&nbsp;product&nbsp;v*w</tt></dd></dl>
+ <dl><dt><a name="-equal"><strong>equal</strong></a>(v: list, w: list) -&gt; bool</dt><dd><tt>Vector&nbsp;equality&nbsp;(with&nbsp;tolerance)<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;first&nbsp;vector<br>
+:param&nbsp;w:&nbsp;second&nbsp;vector<br>
+:return:&nbsp;v==w&nbsp;given&nbsp;a&nbsp;specific&nbsp;tolerance</tt></dd></dl>
+ <dl><dt><a name="-norm"><strong>norm</strong></a>(v: list) -&gt; float</dt><dd><tt>Modulus<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;vector&nbsp;[v1,...,vn]<br>
+:return:&nbsp;modulus&nbsp;(v1**2+...+vn**2)**(1/2)</tt></dd></dl>
+ <dl><dt><a name="-norm_sq"><strong>norm_sq</strong></a>(v: list) -&gt; float</dt><dd><tt>Square&nbsp;modulus<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;vector&nbsp;[v1,...,vn]<br>
+:return:&nbsp;square&nbsp;modulus&nbsp;v1**2+...+vn**2</tt></dd></dl>
+ <dl><dt><a name="-scalar_div"><strong>scalar_div</strong></a>(v: list, scalar: float) -&gt; list</dt><dd><tt>Division&nbsp;of&nbsp;vector&nbsp;by&nbsp;scalar<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;vector&nbsp;[v1,...,vn]<br>
+:param&nbsp;scalar:&nbsp;scalar&nbsp;factor<br>
+:return:&nbsp;scaled&nbsp;vector&nbsp;[v1/scalar,...,&nbsp;vn/scalar]</tt></dd></dl>
+ <dl><dt><a name="-scalar_mult"><strong>scalar_mult</strong></a>(v: list, scalar: float) -&gt; list</dt><dd><tt>Multiplication&nbsp;of&nbsp;vector&nbsp;by&nbsp;scalar<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;vector&nbsp;[v1,...,vn]<br>
+:param&nbsp;scalar:&nbsp;scalar&nbsp;factor<br>
+:return:&nbsp;scaled&nbsp;vector&nbsp;[v1*scalar,...,&nbsp;vn*scalar]</tt></dd></dl>
+ <dl><dt><a name="-sub"><strong>sub</strong></a>(v: list, w: list) -&gt; list</dt><dd><tt>Vector&nbsp;subtraction<br>
+&nbsp;<br>
+:param&nbsp;v:&nbsp;first&nbsp;vector<br>
+:param&nbsp;w:&nbsp;second&nbsp;vector<br>
+:return:&nbsp;difference&nbsp;v-w</tt></dd></dl>
+</td></tr></table>
+</body></html>
