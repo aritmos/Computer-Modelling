@@ -1,6 +1,6 @@
 """
 CMod Exercise 1: Vector class that mimics numpy's built-in
-functionalities including operator overloading 
+functionalities including operator overloading
 * This class only uses dunder methods (hence why 'dim' and 'norm' are attributes)
 
 Note: for two vectors 'u','v' and a scalar 'b':
@@ -30,7 +30,7 @@ class vector():
     """
     :param self: vector
     :param other: other vector
-    :return: vector whose components [self + other]
+    :return: vector with components [self + other]
     """
     if self.dim==other.dim:
       new_values = [i+j for i,j in zip(self.values,other.values)]
@@ -51,7 +51,6 @@ class vector():
     :param other: either a scalar or a vector
     :return: if other is a scalar: the scaled vector
              if other is a vector: the inner product
-    or the corresponding component of other
     """
     if isinstance(other, (int,float)):
       new_values = [other*i for i in self.values]
@@ -84,7 +83,7 @@ class vector():
     """
     if self.dim==other.dim==3:
       a = self.values  # rename values to a,b (arrays)
-      b = other.values # for ease of readablity
+      b = other.values #   for ease of readablity
       return vector([a[1]*b[2]-a[2]*b[1],
                      a[2]*b[0]-a[0]*b[2],
                      a[0]*b[1]-a[1]*b[0]])

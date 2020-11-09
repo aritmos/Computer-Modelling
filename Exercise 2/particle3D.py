@@ -1,12 +1,9 @@
 """
  CompMod Ex2: Particle3D, a class to describe point particles in 3D space
-
  An instance describes a particle in Euclidean 3D space: 
  velocity and position are [3] arrays
 
- Includes time integrator methods +...
-
-author: Sebastian Garcia
+author: Sebastian Garcia (s1910157)
 
 """
 
@@ -53,29 +50,33 @@ class Particle3D(object):
 
 
     @staticmethod
-    def new_particle(input: str) -> object:
+    def new_particle(file_header: '_io.TextIOWrapper') -> list:
         """
         Initialises a Particle3D instance given an input file handle.
         
         The input file should contain one particle per line in the following format:
         <label> <mass> <x> <y> <z> <vx> <vy> <vz>
         
-        :param inputFile: Readable file handle in the above format
-        :param safe: Default to False. If True check for correct types in input
-        :return Particle3D instance
+        * It is important that each parameter is separated by ONE space
+
+        :param inputFile: Readable file handle
+        :return: list of Particle3D instances
         """
-        split = input.split(' ')
-        try: values = [split[0]] + [float(i) for i in split[1:]]
-        except: raise TypeError
-        # Check there are the correct number of items to create a particle
-        if len(values)!=8: raise IndexError #(f'new_particle(input):\n input must be constructed by 8 space separated values\n{len(values)} were given')
-        return Particle3D(values[0],values[1],values[2:5],values[5:])
+        p3d_list = []
+        lines = file_header.readlines()
+        for line in lines:
+            split = line.split(' ')
+            label, values = split[0],[float(i) for i in split[1:]]
+            # Check there are the correct number of parameters to create a particle
+            if len(values)!=7: raise IndexError('space separated input must have 8 parameters') 
+            p3d_list.append(Particle3D(label,values[0],values[1:4],values[4:]))
+        return p3d_list
 
 
     def __str__(self) -> str:
         """
         XYZ-compliant string. The format is
-        <label>    <x>  <y>  <z>
+        <label>  <x>  <y>  <z>
         """
         return f'{self.label} {" ".join([str(i) for i in self.pos])}'
 
@@ -126,7 +127,7 @@ class Particle3D(object):
 
 
     @staticmethod
-    def sys_kinetic(p3d_list: list) -> float:
+    def sys_kinetic(p3d_list: 'list[Particle3D]') -> float:
         """
         Returns the kinetic energy of the whole system
 
@@ -137,7 +138,7 @@ class Particle3D(object):
 
 
     @staticmethod
-    def com_velocity(p3d_list: list ) -> tuple:
+    def com_velocity(p3d_list: 'list[Particle3D]' ) -> tuple:
         """
         Computes the total mass and CoM velocity of a list of P3D's
 

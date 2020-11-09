@@ -16,7 +16,7 @@
 &nbsp;<br>
 &nbsp;Includes&nbsp;time&nbsp;integrator&nbsp;methods&nbsp;+...<br>
 &nbsp;<br>
-author:&nbsp;Sebastian&nbsp;Garcia</tt></p>
+author:&nbsp;Sebastian&nbsp;Garcia&nbsp;(s1910157)</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -80,7 +80,7 @@ com_velocity&nbsp;-&nbsp;computes&nbsp;total&nbsp;mass&nbsp;and&nbsp;CoM&nbsp;ve
 :param&nbsp;velocity:&nbsp;[3]&nbsp;float&nbsp;array&nbsp;w/&nbsp;velocity</tt></dd></dl>
 
 <dl><dt><a name="Particle3D-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><tt>XYZ-compliant&nbsp;string.&nbsp;The&nbsp;format&nbsp;is<br>
-&lt;label&gt;&nbsp;&nbsp;&nbsp;&nbsp;&lt;x&gt;&nbsp;&nbsp;&lt;y&gt;&nbsp;&nbsp;&lt;z&gt;</tt></dd></dl>
+&lt;label&gt;&nbsp;&nbsp;&lt;x&gt;&nbsp;&nbsp;&lt;y&gt;&nbsp;&nbsp;&lt;z&gt;</tt></dd></dl>
 
 <dl><dt><a name="Particle3D-kinetic_e"><strong>kinetic_e</strong></a>(self) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;kinetic&nbsp;energy&nbsp;of&nbsp;a&nbsp;<a href="#Particle3D">Particle3D</a>&nbsp;instance<br>
 &nbsp;<br>
@@ -105,25 +105,23 @@ com_velocity&nbsp;-&nbsp;computes&nbsp;total&nbsp;mass&nbsp;and&nbsp;CoM&nbsp;ve
 
 <hr>
 Static methods defined here:<br>
-<dl><dt><a name="Particle3D-com_velocity"><strong>com_velocity</strong></a>(p3d_list: list) -&gt; tuple</dt><dd><tt>Computes&nbsp;the&nbsp;total&nbsp;mass&nbsp;and&nbsp;CoM&nbsp;velocity&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;P3D's<br>
+<dl><dt><a name="Particle3D-com_velocity"><strong>com_velocity</strong></a>(p3d_list: 'list[Particle3D]') -&gt; tuple</dt><dd><tt>Computes&nbsp;the&nbsp;total&nbsp;mass&nbsp;and&nbsp;CoM&nbsp;velocity&nbsp;of&nbsp;a&nbsp;list&nbsp;of&nbsp;P3D's<br>
 &nbsp;<br>
 :param&nbsp;p3d_list:&nbsp;list&nbsp;in&nbsp;which&nbsp;each&nbsp;item&nbsp;is&nbsp;a&nbsp;P3D&nbsp;instance<br>
 :return&nbsp;total_mass:&nbsp;The&nbsp;total&nbsp;mass&nbsp;of&nbsp;the&nbsp;system&nbsp;<br>
 :return&nbsp;com_vel:&nbsp;Centre-of-mass&nbsp;velocity</tt></dd></dl>
 
-<dl><dt><a name="Particle3D-new_particle"><strong>new_particle</strong></a>(input: str, verify_type: bool = False) -&gt; object</dt><dd><tt>Initialises&nbsp;a&nbsp;<a href="#Particle3D">Particle3D</a>&nbsp;instance&nbsp;given&nbsp;an&nbsp;input&nbsp;file&nbsp;handle.<br>
-&nbsp;<br>
-Can&nbsp;verify&nbsp;if&nbsp;the&nbsp;input&nbsp;types&nbsp;are&nbsp;correct,&nbsp;set&nbsp;off&nbsp;by&nbsp;default&nbsp;<br>
-to&nbsp;save&nbsp;computation&nbsp;time&nbsp;and&nbsp;resources&nbsp;during&nbsp;large&nbsp;particle&nbsp;creations.<br>
+<dl><dt><a name="Particle3D-new_particle"><strong>new_particle</strong></a>(input: str) -&gt; 'Particle3D'</dt><dd><tt>Initialises&nbsp;a&nbsp;<a href="#Particle3D">Particle3D</a>&nbsp;instance&nbsp;given&nbsp;an&nbsp;input&nbsp;file&nbsp;handle.<br>
 &nbsp;<br>
 The&nbsp;input&nbsp;file&nbsp;should&nbsp;contain&nbsp;one&nbsp;particle&nbsp;per&nbsp;line&nbsp;in&nbsp;the&nbsp;following&nbsp;format:<br>
 &lt;label&gt;&nbsp;&lt;mass&gt;&nbsp;&lt;x&gt;&nbsp;&lt;y&gt;&nbsp;&lt;z&gt;&nbsp;&lt;vx&gt;&nbsp;&lt;vy&gt;&nbsp;&lt;vz&gt;<br>
 &nbsp;<br>
+*&nbsp;It&nbsp;is&nbsp;important&nbsp;that&nbsp;each&nbsp;parameter&nbsp;is&nbsp;separated&nbsp;by&nbsp;ONE&nbsp;space<br>
+&nbsp;<br>
 :param&nbsp;inputFile:&nbsp;Readable&nbsp;file&nbsp;handle&nbsp;in&nbsp;the&nbsp;above&nbsp;format<br>
-:param&nbsp;safe:&nbsp;Default&nbsp;to&nbsp;False.&nbsp;If&nbsp;True&nbsp;check&nbsp;for&nbsp;correct&nbsp;types&nbsp;in&nbsp;input<br>
 :return&nbsp;<a href="#Particle3D">Particle3D</a>&nbsp;instance</tt></dd></dl>
 
-<dl><dt><a name="Particle3D-sys_kinetic"><strong>sys_kinetic</strong></a>(p3d_list: list) -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;kinetic&nbsp;energy&nbsp;of&nbsp;the&nbsp;whole&nbsp;system<br>
+<dl><dt><a name="Particle3D-sys_kinetic"><strong>sys_kinetic</strong></a>(p3d_list: 'list[Particle3D]') -&gt; float</dt><dd><tt>Returns&nbsp;the&nbsp;kinetic&nbsp;energy&nbsp;of&nbsp;the&nbsp;whole&nbsp;system<br>
 &nbsp;<br>
 :param&nbsp;p3d_list:&nbsp;list&nbsp;of&nbsp;P3D&nbsp;instances<br>
 :return&nbsp;sys_ke:&nbsp;total&nbsp;kinetic&nbsp;energy&nbsp;of&nbsp;the&nbsp;system</tt></dd></dl>
