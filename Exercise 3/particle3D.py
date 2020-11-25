@@ -29,7 +29,7 @@ class Particle3D(object):
     update_vel     - updates the velocity
 
         Static Methods:
-    new_particle - initializes P3D instances from a file handle
+    new_particle - initializes P3D instances from a string
     sys_kinetic  - computes total K.E. of a p3d list
     com_velocity - computes total mass and CoM velocity of a p3d list
     """
@@ -41,37 +41,34 @@ class Particle3D(object):
 
         :param label: String w/ the name of the particle
         :param mass: float, mass of the particle
-        :param position: [3] float array w/ position
-        :param velocity: [3] float array w/ velocity
+        :param position: [3] float array of position
+        :param velocity: [3] float array of velocity
         """
-        self.label = label
-        self.mass  = mass
-        self.pos   = np.array(pos)
-        self.vel   = np.array(vel)
+        self.label: str = label
+        self.mass: float = mass
+        self.pos: np.array = np.array(pos)
+        self.vel: np.array = np.array(vel)
 
 
     @staticmethod
-    def new_particle(file_header: '_io.TextIOWrapper') -> list:
+    def new_particle(line: str) -> 'Particle3D':
         """
-        Initialises a Particle3D instance given an input file handle.
+        Initialises a Particle3D instance given an input file line.
         
-        The input file should contain one particle per line in the following format:
+        The input file should be in the following format:
         <label> <mass> <x> <y> <z> <vx> <vy> <vz>
         
         * It is important that each parameter is separated by ONE space
 
-        :param file_header: Readable file handle
-        :return: list of Particle3D instances
+        :param line: line from the input file
+        :return: Particle3D instance
         """
-        p3d_list = []
-        lines = file_header.readlines()
-        for line in lines:
-            split = line.split(' ')
-            label, values = split[0],[float(i) for i in split[1:]]
-            # Check there are the correct number of parameters to create a particle
-            if len(values)!=7: raise IndexError('space separated input must have 8 parameters') 
-            p3d_list.append(Particle3D(label,values[0],values[1:4],values[4:]))
-        return p3d_list
+
+        split = line.split(' ')
+        label, values = str(split[0]),[float(i) for i in split[1:]]
+        # Check there are the correct number of parameters to create a particle
+        if len(values) != 7: raise IndexError('space separated input must have 8 parameters') 
+        return Particle3D(label, values[0], values[1:4], values[4:])
 
 
     def __str__(self) -> str:
@@ -91,7 +88,7 @@ class Particle3D(object):
         return 0.5*self.mass*np.sum(self.vel**2)
 
 
-    def momentum(self) -> np.ndarray:
+    def momentum(self) -> np.array:
         """
         Returns the linear momentum of a Particle3D instance
         :return p: [3] float numpy array, m*v
@@ -105,26 +102,26 @@ class Particle3D(object):
 
         :param dt: timestep
         """
-        self.pos = self.pos + dt*self.vel
+        self.pos += dt*self.vel
 
 
-    def update_pos_2nd(self, dt:float, force:np.ndarray) -> None:
+    def update_pos_2nd(self, dt:float, force:np.array) -> None:
         """
         2nd order position update
 
         :param dt: timestep
         :param force: [3] float numpy array, the total force acting on the particle
         """
-        self.pos = self.pos + dt*self.vel + (dt**2)*force/(2*self.mass)
+        self.pos += dt*self.vel + (dt**2)*force/(2*self.mass)
 
-    def update_vel(self, dt: float, force: np.ndarray) -> None:
+    def update_vel(self, dt: float, force: np.array) -> None:
         """
         Velocity update
 
         :param dt: timestep
         :param force: [3] float numpy array, the total force acting on the particle
         """
-        self.vel = self.vel + dt*force/(self.mass)
+        self.vel += dt*force/(self.mass)
 
 
     @staticmethod

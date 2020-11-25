@@ -86,7 +86,7 @@ def main():
     energy_list = [energy]
 
     # Start the time integration loop
-    for i in range(numstep):
+    for _ in range(numstep):
         # Update particle position
         p1.leap_pos1st(dt)
         

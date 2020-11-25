@@ -1,0 +1,8 @@
+# Input values for the vibrational simulation of N2 molecules in a Morse Potential
+#   Parameters for Morse potential and its force:
+#   <re> <De> <a>
+1.09768 9.90523 2.68867
+#   Particle labels, masses, and initial positions and velocities:
+#   <label> <mass> <x> <y> <z> <vx> <vy> <vz>
+p1 14.01 0.55884 0 0 0.05 0 0
+p2 14.01 -0.55884 0 0 -0.05 0 0
