@@ -18,7 +18,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as pyplot
 from particle3D import Particle3D
-
+import os
 
 def force_morse(p1,p2,re,De,a) -> np.array:
     """
@@ -71,18 +71,18 @@ def main():
     # Read name of output file from command line
     if len(sys.argv)!=3:
         print("Wrong number of arguments.")
-        print(f"Usage: {sys.argv[0]} <input file> <output file>")
+        print(f"Usage: {sys.argv[0]} <input file> <output file prefix>")
         quit()
     else:
         inputfile_name = sys.argv[1]
-        outfile_name = sys.argv[2]
+        outfile_prefix = sys.argv[2]
 
     # Open input file
     inputfile = open(inputfile_name, "r")
 
     # Set up simulation parameters
     total_time = 20
-    dt = 0.1
+    dt = 0.01
     numstep = int(total_time/dt)
     time = 0.0
     
@@ -111,9 +111,12 @@ def main():
 
     inputfile.close()
 
-    # Open output file
-    outfile_sep = open(f'{outfile_name}_SE_sep_{dt}.txt', 'w')
-    outfile_energy = open(f'{outfile_name}_SE_energy_{dt}.txt','w')
+    # Open output files under their respective folder
+    dirname = os.path.dirname(__file__)
+    outfile_sep = open(os.path.join(
+        dirname, f'separation data/{outfile_prefix}_SE_{dt}_sep.txt'), 'w')
+    outfile_energy = open(os.path.join(
+        dirname, f'energy data/{outfile_prefix}_SE_{dt}_energy.txt'), 'w')
 
     # Write out initial conditions
     energy = Particle3D.sys_kinetic([p1,p2])+2*pot_energy_morse(p1, p2, re, De, a)

@@ -18,6 +18,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as pyplot
 from particle3D import Particle3D
+import os
 
 
 def force_morse(p1, p2, re, De, a) -> np.array:
@@ -78,7 +79,7 @@ def main():
         quit()
     else:
         inputfile_name = sys.argv[1]
-        outfile_name = sys.argv[2]
+        outfile_prefix = sys.argv[2]
 
     # Open input file
     inputfile = open(inputfile_name, "r")
@@ -119,9 +120,12 @@ def main():
 
     inputfile.close()
 
-    # Open output file
-    outfile_sep = open(f'{outfile_name}_VV_sep_{dt}.txt', 'w')
-    outfile_energy = open(f'{outfile_name}_VV_energy_{dt}.txt', 'w')
+    # Open output files under their respective folder
+    dirname = os.path.dirname(__file__)
+    outfile_sep = open(os.path.join(
+        dirname, f'separation data/{outfile_prefix}_VV_{dt}_sep.txt'), 'w')
+    outfile_energy = open(os.path.join(
+        dirname, f'energy data/{outfile_prefix}_VV_{dt}_energy.txt'), 'w')
 
     # Write out initial conditions
     energy = Particle3D.sys_kinetic(
