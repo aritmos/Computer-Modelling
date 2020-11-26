@@ -18,7 +18,6 @@ import math
 import numpy as np
 import matplotlib.pyplot as pyplot
 from particle3D import Particle3D
-import os
 
 def force_morse(p1,p2,re,De,a) -> np.array:
     """
@@ -68,6 +67,7 @@ def separation(p1:Particle3D,p2:Particle3D) -> float:
 
 # Begin main code
 def main():
+
     # Read name of output file from command line
     if len(sys.argv)!=3:
         print("Wrong number of arguments.")
@@ -81,10 +81,10 @@ def main():
     inputfile = open(inputfile_name, "r")
 
     # Set up simulation parameters
-    total_time = 20
+    total_t = 20
     dt = 0.01
-    numstep = int(total_time/dt)
-    time = 0.0
+    numstep = int(total_t/dt)
+    t = 0.0
     
     # Set the decimal point precission for the output file
     dp = len(str(dt)[str(dt).find('.'):])-1
@@ -112,20 +112,18 @@ def main():
     inputfile.close()
 
     # Open output files under their respective folder
-    dirname = os.path.dirname(__file__)
-    outfile_sep = open(os.path.join(
-        dirname, f'separation data/{outfile_prefix}_SE_{dt}_sep.txt'), 'w')
-    outfile_energy = open(os.path.join(
-        dirname, f'energy data/{outfile_prefix}_SE_{dt}_energy.txt'), 'w')
+    #outfile_sep = open(f'{outfile_prefix}_SE_{dt}_sep.txt', 'w')
+    outfile_sep = open('separation.txt','w')
+    outfile_energy = open(f'{outfile_prefix}_SE_{dt}_energy.txt', 'w')
 
     # Write out initial conditions
     energy = Particle3D.sys_kinetic([p1,p2])+2*pot_energy_morse(p1, p2, re, De, a)
 
-    outfile_sep.write(f'{time:.{dp}f} {separation(p1,p2):.15f}\n')
-    outfile_energy.write(f'{time:.{dp}f} {energy:.15f}\n')
+    outfile_sep.write(f'{t:.{dp}f} {separation(p1,p2):.15f}\n')
+    outfile_energy.write(f'{t:.{dp}f} {energy:.15f}\n')
 
     # Initialise data lists for plotting later
-    time_list = [time]
+    t_list = [t]
     sep_list = [separation(p1,p2)]
     energy_list = [energy]
 
@@ -143,15 +141,15 @@ def main():
         p2.update_vel(dt,-force)
 
         # Increase time
-        time += dt
+        t += dt
         
         # Output particle information
         energy = Particle3D.sys_kinetic([p1,p2])+2*pot_energy_morse(p1, p2, re, De, a)
-        outfile_sep.write(f'{time:.{dp}f} {separation(p1,p2):.15f}\n')
-        outfile_energy.write(f'{time:.{dp}f} {energy:.15f}\n')
+        outfile_sep.write(f'{t:.{dp}f} {separation(p1,p2):.15f}\n')
+        outfile_energy.write(f'{t:.{dp}f} {energy:.15f}\n')
 
         # Append information to data lists
-        time_list.append(time)
+        t_list.append(t)
         sep_list.append(separation(p1,p2))
         energy_list.append(energy)
 
@@ -161,6 +159,8 @@ def main():
     outfile_sep.close()
     outfile_energy.close()
 
+
+    """
     # Plot particle trajectory to screen
     pyplot.title(f'Symplectic Euler: separation vs time, dt = {dt}')
     pyplot.xlabel('Time')
@@ -172,9 +172,9 @@ def main():
     pyplot.title(f'Symplectic Euler: total energy vs time, dt = {dt}')
     pyplot.xlabel('Time')
     pyplot.ylabel('Energy')
-    pyplot.plot(time_list, energy_list)
+    pyplot.plot(t_list, energy_list)
     pyplot.show()
-
+    """
 
 # Execute main method, but only when directly invoked
 if __name__ == "__main__":

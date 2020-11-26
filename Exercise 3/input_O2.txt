@@ -1,5 +1,5 @@
 # Input values for the vibrational simulation of O2 molecules in a Morse Potential
-#   Parameters for Morse potential and its force:
+#   Parameters for Morse potential:
 #   <re> <De> <a>
 1.20752 5.21322 2.65374
 #   Particle labels, masses, and initial positions and velocities:
