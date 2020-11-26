@@ -1,0 +1,151 @@
+-RUNNING SIMULATIONS FOR N2-
+Running simulations using Velocity Verlet:
+ Running 10 with dt = 0.5:
+
+     Results for N2 with dt = 0.5:
+      Average simulation compute time: 0.0078
+      Minimum simulation compute time: 0.0060
+      Average period for all simulations: 2184.3 cm^-1
+    
+ Running 10 with dt = 0.1:
+
+     Results for N2 with dt = 0.1:
+      Average simulation compute time: 0.0229
+      Minimum simulation compute time: 0.0209
+      Average period for all simulations: 2364.4 cm^-1
+    
+ Running 10 with dt = 0.01:
+
+     Results for N2 with dt = 0.01:
+      Average simulation compute time: 0.1740
+      Minimum simulation compute time: 0.1666
+      Average period for all simulations: 2349.9 cm^-1
+    
+ Running 10 with dt = 0.001:
+
+     Results for N2 with dt = 0.001:
+      Average simulation compute time: 1.6061
+      Minimum simulation compute time: 1.5508
+      Average period for all simulations: 2350.4 cm^-1
+    
+ Running 10 with dt = 0.0001:
+
+     Results for N2 with dt = 0.0001:
+      Average simulation compute time: 15.5785
+      Minimum simulation compute time: 15.1260
+      Average period for all simulations: 2350.4 cm^-1
+
+-RUNNING SIMULATIONS FOR N2-
+Running simulations using Symplectic Euler:
+ Running 10 with dt = 0.5:
+d:\Files\Github\Computer-Modelling\Exercise 3 - Analysis\frequency_finder.py:16: RuntimeWarning: invalid value encountered in double_scalars
+  period = (peak_times[-1]-peak_times[0])/(len(peak_times)-1)
+
+     Results for N2 with dt = 0.5:
+      Average simulation compute time: 0.0063
+      Minimum simulation compute time: 0.0050
+      Average period for all simulations: nan cm^-1
+    
+ Running 10 with dt = 0.1:
+
+     Results for N2 with dt = 0.1:
+      Average simulation compute time: 0.0192
+      Minimum simulation compute time: 0.0150
+      Average period for all simulations: 2364.4 cm^-1
+    
+ Running 10 with dt = 0.01:
+
+     Results for N2 with dt = 0.01:
+      Average simulation compute time: 0.1308
+      Minimum simulation compute time: 0.1237
+      Average period for all simulations: 2349.9 cm^-1
+    
+ Running 10 with dt = 0.001:
+
+     Results for N2 with dt = 0.001:
+      Average simulation compute time: 1.1916
+      Minimum simulation compute time: 1.1460
+      Average period for all simulations: 2350.4 cm^-1
+    
+ Running 10 with dt = 0.0001:
+
+     Results for N2 with dt = 0.0001:
+      Average simulation compute time: 11.3586
+      Minimum simulation compute time: 11.0679
+      Average period for all simulations: 2350.4 cm^-1
+
+-RUNNING SIMULATIONS FOR O2-
+Running simulations using Velocity Verlet:
+ Running 10 with dt = 0.5:
+
+     Results for N2 with dt = 0.5:
+      Average simulation compute time: 0.0070
+      Minimum simulation compute time: 0.0060
+      Average period for all simulations: 1638.2 cm^-1
+    
+ Running 10 with dt = 0.1:
+
+     Results for N2 with dt = 0.1:
+      Average simulation compute time: 0.0213
+      Minimum simulation compute time: 0.0189
+      Average period for all simulations: 1440.2 cm^-1
+    
+ Running 10 with dt = 0.01:
+
+     Results for N2 with dt = 0.01:
+      Average simulation compute time: 0.1657
+      Minimum simulation compute time: 0.1612
+      Average period for all simulations: 1433.1 cm^-1
+    
+ Running 10 with dt = 0.001:
+
+     Results for N2 with dt = 0.001:
+      Average simulation compute time: 1.5233
+      Minimum simulation compute time: 1.4856
+      Average period for all simulations: 1433.0 cm^-1
+    
+ Running 10 with dt = 0.0001:
+
+     Results for N2 with dt = 0.0001:
+      Average simulation compute time: 14.6768
+      Minimum simulation compute time: 14.3432
+      Average period for all simulations: 1433.0 cm^-1
+
+      -RUNNING SIMULATIONS FOR O2-
+Running simulations using Symplectic Euler:
+ Running 10 with dt = 0.5:
+d:\Files\Github\Computer-Modelling\Exercise 3 - Analysis\frequency_finder.py:16: RuntimeWarning: invalid value encountered in double_scalars
+  period = (peak_times[-1]-peak_times[0])/(len(peak_times)-1)
+
+     Results for N2 with dt = 0.5:
+      Average simulation compute time: 0.0063
+      Minimum simulation compute time: 0.0050
+      Average period for all simulations: nan cm^-1
+    
+ Running 10 with dt = 0.1:
+
+     Results for N2 with dt = 0.1:
+      Average simulation compute time: 0.0224
+      Minimum simulation compute time: 0.0160
+      Average period for all simulations: 1432.3 cm^-1
+    
+ Running 10 with dt = 0.01:
+
+     Results for N2 with dt = 0.01:
+      Average simulation compute time: 0.1367
+      Minimum simulation compute time: 0.1237
+      Average period for all simulations: 1432.3 cm^-1
+    
+ Running 10 with dt = 0.001:
+
+     Results for N2 with dt = 0.001:
+      Average simulation compute time: 1.1791
+      Minimum simulation compute time: 1.1479
+      Average period for all simulations: 1432.9 cm^-1
+    
+ Running 10 with dt = 0.0001:
+
+     Results for N2 with dt = 0.0001:
+      Average simulation compute time: 11.2257
+      Minimum simulation compute time: 11.0236
+      Average period for all simulations: 1432.9 cm^-1

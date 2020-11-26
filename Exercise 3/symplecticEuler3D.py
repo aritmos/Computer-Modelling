@@ -89,31 +89,21 @@ def main():
     # Set the decimal point precission for the output file
     dp = len(str(dt)[str(dt).find('.'):])-1
 
-    # Set up simulation parameters for potential and force and create particles
+    # Get Morse Potential Parameters from input file
+    inputfile = open(inputfile_name, 'r')
     lines = inputfile.readlines()
-    first_line = True
-    particle_list = []
-    for line in lines:
-        if not line.startswith('#'): # If the line is not a comment
-            # First line has the potential and and force parameters (re,De,a)
-            if first_line: 
-                split = line.split(' ')
-                if len(split)!=3:raise IndexError('First uncommented line in input file needs to have three space sparated values: <re> <De> <a>')
-                global re, De, a
-                try: re,De,a=[float(i) for i in split]
-                except: TypeError('The 3 parameters in the first uncommented line of the input file must be numbers')
-                first_line = False # if the variables were initialised then stop looking for the first line
-            # if its not the (re De a) line create a new particle
-            else: particle_list.append(Particle3D.new_particle(line)) 
+    # Parameters are stored in line 4 (index 3)
+    re, De, a = [float(i) for i in lines[3].split(' ')]  
+    inputfile.close()
 
-    p1 = particle_list[0]
-    p2 = particle_list[1]
-
+    # Create particles from input file
+    inputfile = open(inputfile_name, 'r')
+    # Particles are in lines 7-8 (newparticle method takes care adjusting indices)
+    p1, p2 = Particle3D.new_particle(inputfile, 7, 8)
     inputfile.close()
 
     # Open output files under their respective folder
-    #outfile_sep = open(f'{outfile_prefix}_SE_{dt}_sep.txt', 'w')
-    outfile_sep = open('separation.txt','w')
+    outfile_sep = open(f'{outfile_prefix}_SE_{dt}_sep.txt', 'w')
     outfile_energy = open(f'{outfile_prefix}_SE_{dt}_energy.txt', 'w')
 
     # Write out initial conditions
@@ -155,26 +145,25 @@ def main():
 
 
     # Post-simulation:
+
     # Close output file
     outfile_sep.close()
     outfile_energy.close()
 
-
-    """
     # Plot particle trajectory to screen
-    pyplot.title(f'Symplectic Euler: separation vs time, dt = {dt}')
+    pyplot.title(f'Symplectic Euler: separation vs time (dt = {dt})')
     pyplot.xlabel('Time')
     pyplot.ylabel('Separation')
-    pyplot.plot(time_list, sep_list)
+    pyplot.plot(t_list, sep_list)
     pyplot.show()
 
     # Plot particle energy to screen
-    pyplot.title(f'Symplectic Euler: total energy vs time, dt = {dt}')
+    pyplot.title(f'Symplectic Euler: total energy vs time (dt = {dt})')
     pyplot.xlabel('Time')
     pyplot.ylabel('Energy')
     pyplot.plot(t_list, energy_list)
     pyplot.show()
-    """
+
 
 # Execute main method, but only when directly invoked
 if __name__ == "__main__":

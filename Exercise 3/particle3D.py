@@ -51,23 +51,24 @@ class Particle3D(object):
 
 
     @staticmethod
-    def new_particle(file_header: '_io.TextIOWrapper', start_line:int, end_line:int) -> list:
+    def new_particle(file_header: '_io.TextIOWrapper', start:int, end:int) -> list:
         """
         Initialises Particle3D instances given a line range within a file handle.
         
-        The input file should contain one particle per line in the following format:
+        The given line range should contain one particle per line in the following format:
         <label> <mass> <x> <y> <z> <vx> <vy> <vz>
         
         * It is important that each parameter is separated by ONE space
+        * The first line in the file is line 1 (not 0)
 
         :param file_header: Readable file handle
-        :param start_line: First line to start reading from
-        :param end_line: Last line to read up to and including
+        :param start: First line to start reading from
+        :param end: Last line to read up to and including
         :return: list of Particle3D instances
         """
         p3d_list = []
         lines = file_header.readlines()
-        for line in lines[start_line:end_line+1]:
+        for line in lines[start-1:end]:
             split = line.split(' ')
             label, values = split[0],[float(i) for i in split[1:]]
             # Check there are the correct number of parameters to create a particle
