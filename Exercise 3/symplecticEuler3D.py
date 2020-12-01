@@ -11,6 +11,8 @@ where re, De and a are read in from an input file
 along with the initial properties of the particles
 and passed to the functions that
 calculate force and potential energy.
+
+Sys args are: symplecticEuler3D <dt> <input_file> <output_file_prefix>
 """
 
 import sys
@@ -69,32 +71,35 @@ def separation(p1:Particle3D,p2:Particle3D) -> float:
 def main():
 
     # Read name of output file from command line
-    if len(sys.argv)!=3:
+    if len(sys.argv)!=4:
         print("Wrong number of arguments.")
         print(f"Usage: {sys.argv[0]} <input file> <output file prefix>")
         quit()
     else:
-        inputfile_name = sys.argv[1]
-        outfile_prefix = sys.argv[2]
+        dt = float(sys.argv[1])
+        inputfile_name = sys.argv[2]
+        outfile_prefix = sys.argv[3]
 
     # Open input file
     inputfile = open(inputfile_name, "r")
 
     # Set up simulation parameters
     total_t = 20
-    dt = 0.01
     numstep = int(total_t/dt)
     t = 0.0
     
-    # Set the decimal point precission for the output file
+    # Set the decimal point precission for time in the output file
+    # eg: dt = 10^-3 gets logged as 0.001 instead of 0.001000...
     dp = len(str(dt)[str(dt).find('.'):])-1
 
     # Get Morse Potential Parameters from input file
     inputfile = open(inputfile_name, 'r')
     lines = inputfile.readlines()
+
     # Parameters are stored in line 4 (index 3)
     re, De, a = [float(i) for i in lines[3].split(' ')]  
-    inputfile.close()
+    inputfile.close() # file must be closed and reopened due
+                      # to the implementation of new_particle
 
     # Create particles from input file
     inputfile = open(inputfile_name, 'r')
@@ -102,15 +107,18 @@ def main():
     p1, p2 = Particle3D.new_particle(inputfile, 7, 8)
     inputfile.close()
 
-    # Open output files under their respective folder
-    outfile_sep = open(f'{outfile_prefix}_SE_{dt}_sep.txt', 'w')
+    # Open output files 
+    outfile_sep = open(f'{outfile_prefix}_SE_{dt}_separation.txt', 'w')
     outfile_energy = open(f'{outfile_prefix}_SE_{dt}_energy.txt', 'w')
 
     # Write out initial conditions
-    energy = Particle3D.sys_kinetic([p1,p2])+2*pot_energy_morse(p1, p2, re, De, a)
+    energy = Particle3D.sys_kinetic(
+        [p1,p2])+pot_energy_morse(p1, p2, re, De, a)
 
     outfile_sep.write(f'{t:.{dp}f} {separation(p1,p2):.15f}\n')
     outfile_energy.write(f'{t:.{dp}f} {energy:.15f}\n')
+    # energy is written to 15dp which shouldn't affect calculation precission
+    # given the simulation but does greatly increase file readability
 
     # Initialise data lists for plotting later
     t_list = [t]
@@ -134,7 +142,7 @@ def main():
         t += dt
         
         # Output particle information
-        energy = Particle3D.sys_kinetic([p1,p2])+2*pot_energy_morse(p1, p2, re, De, a)
+        energy = Particle3D.sys_kinetic([p1,p2])+pot_energy_morse(p1, p2, re, De, a)
         outfile_sep.write(f'{t:.{dp}f} {separation(p1,p2):.15f}\n')
         outfile_energy.write(f'{t:.{dp}f} {energy:.15f}\n')
 
@@ -152,15 +160,15 @@ def main():
 
     # Plot particle trajectory to screen
     pyplot.title(f'Symplectic Euler: separation vs time (dt = {dt})')
-    pyplot.xlabel('Time')
-    pyplot.ylabel('Separation')
+    pyplot.xlabel('Time [Å(u/eV)^0.5]')
+    pyplot.ylabel('Separation [Å]')
     pyplot.plot(t_list, sep_list)
     pyplot.show()
 
     # Plot particle energy to screen
     pyplot.title(f'Symplectic Euler: total energy vs time (dt = {dt})')
-    pyplot.xlabel('Time')
-    pyplot.ylabel('Energy')
+    pyplot.xlabel('Time [Å(u/eV)^0.5]')
+    pyplot.ylabel('Energy [eV]')
     pyplot.plot(t_list, energy_list)
     pyplot.show()
 
@@ -168,4 +176,3 @@ def main():
 # Execute main method, but only when directly invoked
 if __name__ == "__main__":
     main()
-

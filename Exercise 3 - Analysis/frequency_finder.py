@@ -2,6 +2,7 @@ import numpy as np
 from scipy.signal import find_peaks
 
 def main():
+  
   with open('separation.txt','r') as data_table:
     times,data = [],[]
     lines = data_table.readlines()

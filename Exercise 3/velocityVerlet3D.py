@@ -11,6 +11,8 @@ where re, De and a are read in from an input file
 along with the initial properties of the particles
 and passed to the functions that
 calculate force and potential energy.
+
+Sys args are: velocityVerlet3D.py <dt> <input_file> <output_file_prefix>
 """
 
 import sys
@@ -72,17 +74,17 @@ def separation(p1: Particle3D, p2: Particle3D) -> float:
 
 def main():
     # Read needed information from command line
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         print("Wrong number of arguments.")
         print(f"Usage: {sys.argv[0]} <input file> <output file prefix>")
         quit()
     else:
-        inputfile_name = sys.argv[1]
-        outfile_prefix = sys.argv[2]
+        dt = float(sys.argv[1])
+        inputfile_name = sys.argv[2]
+        outfile_prefix = sys.argv[3]
 
     # Set up simulation time parameters
     total_time = 20
-    dt = 0.01
     numstep = int(total_time/dt)
     t = 0.0
 
@@ -94,31 +96,34 @@ def main():
     lines = inputfile.readlines()
     # Parameters are stored in line 4 (index 3)
     re, De, a = [float(i) for i in lines[3].split(' ')]
-    inputfile.close()
+    inputfile.close() # file must be closed and reopened due
+                      # to the implementation of new_particle
 
     # Create particles from input file
     inputfile = open(inputfile_name, 'r')
     # Particles are in lines 7-8 (newparticle method takes care adjusting indices)
     p1, p2 = Particle3D.new_particle(inputfile, 7, 8)
-    inputfile.close()
+    inputfile.close() 
 
     # Open output files
-    outfile_sep = open(f'{outfile_prefix}_VV_{dt}_sep.txt', 'w')
+    outfile_sep = open(f'{outfile_prefix}_VV_{dt}_separation.txt', 'w')
     outfile_energy = open(f'{outfile_prefix}_VV_{dt}_energy.txt', 'w')
 
     # Write out initial conditions
     energy = Particle3D.sys_kinetic(
-        [p1, p2])+2*pot_energy_morse(p1, p2, re, De, a)
+        [p1, p2])+pot_energy_morse(p1, p2, re, De, a)
 
     outfile_sep.write(f'{t:.{dp}f} {separation(p1,p2):.15f}\n')
     outfile_energy.write(f'{t:.{dp}f} {energy:.15f}\n')
+    # energy is written to 15dp which shouldn't affect calculation precission
+    # given the simulation but does greatly increase file readability
 
     # Initialise data lists for plotting later
     t_list = [t]
     sep_list = [separation(p1, p2)]
     energy_list = [energy]
 
-    # Start the t integration loop
+    # Start the time integration loop
     for _ in range(numstep):
         # Update particle positions
         force = force_morse(p1,p2,re,De,a)
@@ -139,7 +144,7 @@ def main():
         t += dt
 
         # Output particle information
-        energy = Particle3D.sys_kinetic([p1,p2]) + 2*pot_energy_morse(p1,p2,re,De,a)
+        energy = Particle3D.sys_kinetic([p1,p2]) + pot_energy_morse(p1,p2,re,De,a)
         outfile_sep.write(f'{t:.{dp}f} {separation(p1,p2):.15f}\n')
         outfile_energy.write(f'{t:.{dp}f} {energy:.15f}\n')
 
@@ -149,22 +154,23 @@ def main():
         energy_list.append(energy)
 
     # Post-simulation:
+    
     # Close output file
     outfile_sep.close()
     outfile_energy.close()
 
     
     # Plot particle trajectory to screen
-    pyplot.title(f'Symplectic Euler: separation vs t (dt = {dt})')
-    pyplot.xlabel('t')
-    pyplot.ylabel('Separation')
+    pyplot.title(f'Velocity Verlet: Separation vs time (dt = {dt})')
+    pyplot.xlabel('Time [Å(u/eV)^0.5]')
+    pyplot.ylabel('Separation [Å]')
     pyplot.plot(t_list, sep_list)
     pyplot.show()
 
     # Plot particle energy to screen
-    pyplot.title(f'Symplectic Euler: total energy vs time (dt = {dt})')
-    pyplot.xlabel('Time')
-    pyplot.ylabel('Energy')
+    pyplot.title(f'Velocity Verlet: Total Energy vs time (dt = {dt})')
+    pyplot.xlabel('Time [Å(u/eV)^0.5]')
+    pyplot.ylabel('Energy [eV]')
     pyplot.plot(t_list, energy_list)
     pyplot.show()
     

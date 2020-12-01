@@ -99,7 +99,7 @@ def main(inputfile_name:str, dt:float):
 
     # Write out initial conditions
     energy = Particle3D.sys_kinetic(
-        [p1, p2])+2*pot_energy_morse(p1, p2, re, De, a)
+        [p1, p2])+pot_energy_morse(p1, p2, re, De, a)
 
     outfile_sep.write(f'{t:.{dp}f} {separation(p1,p2):.15f}\n')
     outfile_energy.write(f'{t:.{dp}f} {energy:.15f}\n')
@@ -130,7 +130,7 @@ def main(inputfile_name:str, dt:float):
         t += dt
 
         # Output particle information
-        energy = Particle3D.sys_kinetic([p1,p2]) + 2*pot_energy_morse(p1,p2,re,De,a)
+        energy = Particle3D.sys_kinetic([p1,p2]) + pot_energy_morse(p1,p2,re,De,a)
         outfile_sep.write(f'{t:.{dp}f} {separation(p1,p2):.15f}\n')
         outfile_energy.write(f'{t:.{dp}f} {energy:.15f}\n')
 
@@ -146,21 +146,17 @@ def main(inputfile_name:str, dt:float):
 
     '''
     # Plot particle trajectory to screen
-    pyplot.title(f'Symplectic Euler: separation vs t (dt = {dt})')
+    pyplot.title(f'Velocity Verlet: separation vs t (dt = {dt})')
     pyplot.xlabel('t')
     pyplot.ylabel('Separation')
     pyplot.plot(t_list, sep_list)
     pyplot.show()
 
     # Plot particle energy to screen
-    pyplot.title(f'Symplectic Euler: total energy vs time (dt = {dt})')
+    pyplot.title(f'Velocity Verlet: total energy vs time (dt = {dt})')
     pyplot.xlabel('Time')
     pyplot.ylabel('Energy')
     pyplot.plot(t_list, energy_list)
     pyplot.show()
     '''
     
-
-# Execute main method, but only when directly invoked
-if __name__ == "__main__":
-    main()
