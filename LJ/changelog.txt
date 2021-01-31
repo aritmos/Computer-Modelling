@@ -1,0 +1,8 @@
+31/1
+- changed mdu to return box_length instead of box_size
+- changed variables in data.dat to use 0/1 instead of False/True 
+- new_particle now only takes in N and m and returns dummy list
+- changed position and velocity in mdu to pos, vel.
+- changed 'new_particle' to 'new_particles'
+- spacing on print statements for cleaner output
+- added mass to setup.dat

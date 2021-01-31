@@ -35,7 +35,7 @@ class Particle3D(object):
     """
 
 
-    def __init__(self, label: str, mass: float, pos: list, vel: list) -> None:
+    def __init__(self, label: int, mass: float, pos: list, vel: list) -> None:
         """
         Initialises a particle in 3D space
 
@@ -51,30 +51,12 @@ class Particle3D(object):
 
 
     @staticmethod
-    def new_particle(file_header: '_io.TextIOWrapper', start:int, end:int) -> list:
-        """
-        Initialises Particle3D instances given a file handle and a line range
-        
-        The given line range should contain one particle per line in the following format:
-        <label> <mass> <x> <y> <z> <vx> <vy> <vz>
-        
-        * It is important that each parameter is separated by ONE space
-        * The first line in the file is line 1 (not 0)
-
-        :param file_header: Readable file handle
-        :param start: First line to start reading from
-        :param end: Last line to read up to and including
-        :return: list of Particle3D instances
-        """
+    def new_particles(N:int,mass:float) -> list:
         p3d_list = []
-        lines = file_header.readlines()
-        for line in lines[start-1:end]:
-            split = line.split(' ')
-            label, values = split[0],[float(i) for i in split[1:]]
-            # Check there are the correct number of parameters to create a particle
-            if len(values)!=7: raise IndexError('space separated input must have 8 parameters') 
-            p3d_list.append(Particle3D(label,values[0],values[1:4],values[4:]))
+        for i in range(1,N+1):
+            p3d_list.append(Particle3D(i,mass,[0,0,0],[0,0,0]))
         return p3d_list
+        
 
 
     def __str__(self) -> str:
