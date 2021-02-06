@@ -6,3 +6,7 @@
 - changed 'new_particle' to 'new_particles'
 - spacing on print statements for cleaner output
 - added mass to setup.dat
+
+6/2
+- change p3d instance label from i to p{i} for better readability in traj.xyz
+- change p3d instance label to start at 0 for better working with arrays
