@@ -1,7 +1,6 @@
 
 # IMPORTS
-import math
-from os import sys
+from os import sep, sys
 import numpy as np 
 import sys 
 
@@ -15,34 +14,32 @@ def force_LJ(pair_separation:np.array, l:float) -> np.array:
   Calculates the MIC-force between two particles
   given their real separation vector
   '''
-  pair_separation = np.array(pbc.minimum_image(pair_separation,l))
-  r = np.linalg.norm(pair_separation)
-  F = -48*(r**(-12)-r**(-6))*r**(-1)*pair_separation
+  mic_pair_separation = np.array(pbc.minimum_image(pair_separation,l))
+  r = np.linalg.norm(mic_pair_separation)
+  F = -48*(r**(-14)-0.5*r**(-8))*mic_pair_separation
   return F
 
 
-def force_i(N:int, i:int, l:float, separation_array:np.ndarray) -> np.array:
+def force_matrix(separation_array:np.ndarray, l:float) -> np.ndarray:
   '''
-  Calculates the net force on particle i
-  * requires l to pass to force_LJ to use MIC
+  Calculates the [N,N,3] matrix of forces F_ij 
+  (force on p_i due to p_j) for i < j
   '''
-  F = np.zeros(3)
-  for j in range(N):
-    if i < j:
-      F += force_LJ(separation_array[i][j],l)
-    elif i > j:
-      # separation_array only carries forces i < j
-      # -> for i > j we subtract the force of particle j due to i 
-      F -= force_LJ(separation_array[j][i],l)
-  return F
+  N = len(separation_array)
+  F_matrix = np.zeros([N,N,3])
+  for i in range(N-1):
+    for j in range(i+1,N):
+      F_matrix[i][j] = force_LJ(separation_array[i][j],l)
+  return F_matrix
 
 
 def main():
 
-  #--- SETTING VARIABLES AND PARAMETERS --- 
+  #--- SETTING VARIABLES AND PARAMETERS ---------------------------------- 
 
   print('---\nReading from input files...')
   # Read needed information from command line
+  '''
   if len(sys.argv) not in [3,4]:
     print("Wrong number of arguments")
     print(f"Usage: {sys.argv[0]} <setup file> <data file> <OPTIONAL: output file>")
@@ -50,6 +47,10 @@ def main():
   setup_file = sys.argv[1]
   data_file = sys.argv[2]
   traj_file = sys.argv[3] if len(sys.argv) == 4 else 'traj.xyz'
+  '''
+  setup_file = 'setup.dat'
+  data_file = 'data.dat'
+  traj_file = 'traj.xyz'
 
   # Get information from input files
   with open(setup_file, 'r') as setup:
@@ -86,7 +87,7 @@ def main():
   print(log_kinetic_e, log_potential_e, log_total_e, log_msd, log_rdf)
   '''
 
-  # --- INITIALISATION --- 
+  # --- INITIALISATION -------------------------------------------------
 
   print(f'Initialising {N} particles:')
   # Create the N particles with dummy pos and vel
@@ -96,63 +97,126 @@ def main():
   cell_length, full_lattice = mdu.set_initial_positions(density, p3d_list)
   mdu.set_initial_velocities(temp, p3d_list)
 
-  '''
-  # debugging
-  print(cell_length, full_lattice)
-  for i in p3d_list:
-    print(i)
-  '''
+  x = p3d_list[1].pos[1]
+  for particle in p3d_list:
+    particle.pos /= x
 
-  # --- SIMULATION ---
+
+  # --- SIMULATION -------------------------------------------------------
 
   # Open output files:
 
   outfile_traj = open(traj_file,'w')
 
+  if log_total_e:
+    outfile_total_e = open('total_e.csv','w')
+  if log_kinetic_e:
+    outfile_kinetic_e = open('kinetic_e.txt', 'w')
+  if log_potential_e:
+    outfile_potential_e = open('potential_e.txt', 'w')
+
+  outfile_vel = open('velocities.txt','w')
+
   # Initialize objects for use in simulation
-  t = 0
+  t = 0.0
+  t_step = int(t_total / dt)
 
   # simulation loop
 
-  t_step = int(t_total / dt)
-  for step in range(t_step):
+  for _ in range(t_step):
 
-    # --- Logging Observables ---
+    separation_array = p3d.pair_separations(p3d_list)
+
+    # --- Logging Observables ---------------------------------------------
 
     # Trajectories:
     outfile_traj.write(f'{N}\n')
-    outfile_traj.write(f'Step = {step}\n')
+    outfile_traj.write(f'time = {t}\n')
     for particle in p3d_list:
       outfile_traj.write(f'{particle}\n')
 
-    # --- Particle Time Integrator ---
+    # Energies:
+    if log_kinetic_e:
+      outfile_kinetic_e.write(f'{t:.4} {p3d.sys_kinetic(p3d_list)}\n')
+
+    if log_potential_e:
+      outfile_potential_e.write(f'{t:.4} {obs.potential_energy(separation_array)}\n')
+
+    outfile_vel.write(f'time = {t:.4}\n')
+    for particle in p3d_list:
+      outfile_vel.write(f'{particle.vel}\n')
+      
+
+    # --- Particle Time Integrator ----------------------------------------
 
     # calculate all the net forces for each particle
-    separation_array = p3d.pair_separations(p3d_list)
-    force_list = np.zeros([N,3])
+    F_matrix = force_matrix(separation_array,cell_length)
+    
+    print(f't = {t}\n') #%
+    print(f'separation:\n{separation_array}')
+    print(f'forces:\n{F_matrix}\n')
+    
+
+    F_list = []
     for i in range(N):
-      force_list[i] = force_i(N, i, cell_length, separation_array)
+      F_i = np.zeros(3)
+      for j in range(N):
+        if i < j: 
+          F_i += F_matrix[i][j]
+        elif i > j: 
+          F_i -= F_matrix[j][i]
+      F_list.append(F_i)
+    
+    print(f'f_list:\n{F_list}') #%
 
     # update particle positions
     for i, particle in enumerate(p3d_list):
-      particle.update_pos_2nd(cell_length,dt,force_list[i])
+      particle.update_pos_2nd(cell_length,dt,F_list[i])
 
     # update forces
     separation_array = p3d.pair_separations(p3d_list)
-    force_new_list = np.zeros([N,3])
+    F_matrix = force_matrix(separation_array, cell_length)
+    F_new_list = []
     for i in range(N):
-      force_new_list[i] = force_i(N, i, cell_length, separation_array)
+      F_i = np.zeros(3)
+      for j in range(N):
+        if i < j:
+          F_i += F_matrix[i][j]
+        elif i > j:
+          F_i -= F_matrix[j][i]
+      F_new_list.append(F_i)
 
     # update particle velocities
     for i, particle in enumerate(p3d_list):
-      particle.update_vel(dt,0.5*(force_list[i]+force_new_list[i]))
+      particle.update_vel(dt,0.5*(F_list[i]+F_new_list[i]))
 
     # update time
     t += dt
     
 
+  # Close all simulation files
 
   outfile_traj.close()
+  if log_kinetic_e: outfile_kinetic_e.close()
+  if log_potential_e: outfile_potential_e.close()
+
+  # --- POST SIMULATION CALCULATIONS --------------------------------
+
+  # Total Energy
+  if log_total_e:
+    outfile_kinetic_e = open('kinetic_e.txt','r')
+    outfile_potential_e = open('potential_e.txt','r')
+    kinetic_lines = outfile_kinetic_e.readlines()
+    potential_lines = outfile_potential_e.readlines()
+    for i in range(t_step):
+      t, kinetic_e = kinetic_lines[i].split(' ')
+      potential_e = potential_lines[i].split(' ')[1]
+      outfile_total_e.write(f'{t}, {float(kinetic_e)+float(potential_e)}\n')
+
+    outfile_total_e.close()
+
+
+  print('DONE ! ')
 
 
 

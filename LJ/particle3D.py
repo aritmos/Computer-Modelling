@@ -101,7 +101,8 @@ class Particle3D(object):
         :param dt: timestep
         :param force: [3] float numpy array, the total force acting on the particle
         """
-        self.pos = self.pos + dt*self.vel + (dt**2)*force/(2*self.mass)
+        self.pos += dt*self.vel + (dt**2)*force/(2*self.mass)
+        # Apply PBC
         self.pos = np.array(pbc.periodic_image(self.pos, l))
 
     def update_vel(self, dt: float, force: np.ndarray) -> None:

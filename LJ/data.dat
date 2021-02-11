@@ -1,15 +1,15 @@
 # N
 3
 # dt
-1
+0.001
 # total time
-3
+0.002
 # kinetic energy
-0
+1
 # potential energy
-0
+1
 # total energy
-0
+1
 # mean square displacement
 0
 # radial distribution function

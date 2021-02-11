@@ -1,0 +1,49 @@
+# calculate all the net forces for each particle
+force_list = []
+for i in range(N):
+  force_list.append(net_force_i(i, cell_length, separation_array))
+
+# update particle positions
+for i, particle in enumerate(p3d_list):
+  particle.update_pos_2nd(cell_length,dt,force_list[i])
+
+# update forces
+separation_array = p3d.pair_separations(p3d_list)
+force_new_list = []
+for i in range(N):
+  force_new_list.append(net_force_i(i, cell_length, separation_array))
+
+# update particle velocities
+for i, particle in enumerate(p3d_list):
+  particle.update_vel(dt,0.5*(force_list[i]+force_new_list[i]))
+
+
+  --- 
+
+
+'''
+def net_force_i(i:int, l:float, separation_array:np.ndarray) -> np.array:
+  
+  # Calculates the net force on particle i
+  # * requires l to pass to force_LJ to use MIC
+  
+  N = len(separation_array)
+  F = np.zeros(3)
+  for j in range(N):
+    if i < j:
+      print(f'r_{i}{j} = {pbc.minimum_image(separation_array[i][j],l)}')
+      print(f'mic r_{i}{j} = {pbc.minimum_image(separation_array[i][j],l)}')
+      print(f'|r_{i}{j}| = {np.linalg.norm(separation_array[i][j])}')
+      print(f'F_{i}<-{j} = {force_LJ(separation_array[i][j],l)}\n')
+      F += force_LJ(separation_array[i][j],l)
+    elif i > j:
+      print(f'r_{i}{j} = {-separation_array[j][i]}')
+      print(f'|r_{i}{j}| = {np.linalg.norm(separation_array[j][i])}')
+      print(f'F_{i}<-{j} = {-force_LJ(separation_array[j][i],l)}')
+      # separation_array only carries forces i < j
+      # -> for i > j we subtract the force of particle j due to i 
+      F -= force_LJ(separation_array[j][i],l)
+
+  print(f' F_{i} = {F}\n')
+  return F
+'''

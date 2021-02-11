@@ -8,5 +8,8 @@
 - added mass to setup.dat
 
 6/2
-- change p3d instance label from i to p{i} for better readability in traj.xyz
-- change p3d instance label to start at 0 for better working with arrays
+- changed p3d instance label from i to p{i} for better readability in traj.xyz
+- changed p3d instance label to start at 0 for better working with arrays
+
+10/2
+- changed force_i to new_force_i 
