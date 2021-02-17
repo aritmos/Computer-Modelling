@@ -93,7 +93,9 @@ def set_initial_velocities(mytemp, particles, seed=None):
         particle.vel = velocity
 
     # Output as a sanity check
-    print(" Temperature = {0:f}\n Total Kinetic Energy = {1:f}".format(temp, 0.5*np.sum(velocities**2)))
-    print(" Centre-of-mass velocity = {0}\n".format(v_com/natoms))
+    print(f" Temperature = {temp:f}\n Total Kinetic Energy = {0.5*np.sum(velocities**2):f}")
+    np.set_printoptions(precision=4) # Make the CoM array cleaner by rounding
+    print(f" Centre-of-mass velocity = {v_com/natoms}\n")
+    np.set_printoptions(precision=8) # Set precision back to default
 
 

@@ -5,6 +5,7 @@ Periodic Boundary Condition problems for a cube of length 'l'
 Author: Sebastian Garcia (s1910157)
 Version: 10/2020
 """
+import numpy as np
 
 def periodic_image(x:list,l:float) -> list:
   """
@@ -23,4 +24,4 @@ def minimum_image(x:list,l:float) -> list:
   :return: image of the point closest to the origin
   """
   x = periodic_image(x,l)
-  return [i if i <= l/2 else i-l for i in x]
+  return np.array([i if i <= l/2 else i-l for i in x])

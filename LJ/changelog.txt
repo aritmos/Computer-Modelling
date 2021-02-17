@@ -13,3 +13,12 @@
 
 10/2
 - changed force_i to new_force_i 
+- made the force calculations not repeat calculations
+
+12/2
+- made pbc.mic output np.array instead of list
+- removed unecessary parameters in setup.dat
+
+17/2
+- made output files save to a directory 'output'
+- obs.msd now takes in initial_positions and p3d_list

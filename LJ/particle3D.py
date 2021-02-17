@@ -64,7 +64,7 @@ class Particle3D(object):
         XYZ-compliant string. The format is
         <label>  <x>  <y>  <z>
         """
-        return f'{self.label} {" ".join([str(i) for i in self.pos])}'
+        return f'{self.label} {self.pos[0]:.4f} {self.pos[1]:.4f} {self.pos[2]:.4f}'
 
 
     def kinetic_e(self) -> float:
