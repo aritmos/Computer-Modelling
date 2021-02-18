@@ -22,3 +22,6 @@
 17/2
 - made output files save to a directory 'output'
 - obs.msd now takes in initial_positions and p3d_list
+
+18/2
+- added net_forces() to calculate the net forces list 

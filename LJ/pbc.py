@@ -7,16 +7,16 @@ Version: 10/2020
 """
 import numpy as np
 
-def periodic_image(x:list,l:float) -> list:
+def periodic_image(x:list,l:float) -> np.array:
   """
   Periodic Boundary
   :param x: point in R^3 
   :param l: cube side length 
   :return: image of the point inside the 'original' cube 
   """
-  return [i % l for i in x]
+  return np.array([i % l for i in x])
 
-def minimum_image(x:list,l:float) -> list:
+def minimum_image(x:list,l:float) -> np.array:
   """
   Minimum Image Convention
   :param x: point in R^3

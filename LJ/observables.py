@@ -20,23 +20,17 @@ def msd(initial_positions:np.array, current_positions:np.array, l:float) -> floa
 def rdf(particle_separations:np.ndarray, l:float, res:int) -> np.array:
   N = len(particle_separations)
   histogram = np.zeros(res)
-  # Maximum MIC distance is l*sqrt(3)/2,
-  # due to floating point rounding in calculations we add 0.001*l
-  # Max distance will be the range of the histogram
-  # the histogram will have (res) number of bars
   max_distance = l*(np.sqrt(3)/2+0.001)
-
   for i in range(1,N):
     # Reference particle is p0
     separation = particle_separations[0][i]
     mic_separation = pbc.minimum_image(separation,l)
-    mic_separation_distance = np.linalg.norm(mic_separation)
-    histogram[int((mic_separation_distance/ max_distance) * res)] += 1
+    r = np.linalg.norm(mic_separation)
+    value = (N*4*np.pi*(r**2)*(max_distance/res))**-1
+    histogram[int((r / max_distance) * res)] += value
 
   return histogram
 
-def rdf_normalize(histogram:np.array,l:float, res:int) -> np.array:
-  max_length = l*(np.sqrt(3)/2+0.001)
-  area = sum(histogram)*(max_length/res)
-  return histogram/area
+def rdf_normalize(histogram:np.array, total_t:int) -> np.array:
+  return histogram/(total_t/5)
 

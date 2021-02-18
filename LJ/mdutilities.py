@@ -3,7 +3,6 @@ CMod Project B: auxiliary MD methods
 """
 import sys
 import math
-import random
 import numpy as np
 
 
@@ -57,19 +56,19 @@ def set_initial_positions(rho, particles):
 
 def set_initial_velocities(mytemp, particles, seed=None):
     # Set the random seed to ease up debugging
-    if seed is not None:
-        try:
-            random.seed(seed)
-        except:
-            print(" WARNING, {0} is not a valid random seed\n".format(seed))
-            print(" Continuing without setting the seed...\n")
+    try:
+        prng = np.random.RandomState(seed)
+    except:
+        print("WARNING, {0} is not a valid random seed\n".format(seed))
+        print("Continuing without setting the seed...\n")
+        prng = np.random.RandomState(None)
 
     # Check the temperature can be a valid, positive float
     # NOTE: This should be done at parameter read
     try:
         temp = float(mytemp)
     except:
-        print(" ERROR: Could not convert {0} to a valid float. Exiting...\n".format(temp))
+        print(" ERROR: Could not convert {0} to a valid float. Exiting...\n".format(mytemp))
         sys.exit()
     if temp < 0.0:
         print(" ERROR: Temperature must be positive. Exiting...\n")
@@ -77,7 +76,7 @@ def set_initial_velocities(mytemp, particles, seed=None):
 
     # Initialisation
     natoms = len(particles)
-    velocities = np.random.random([natoms,3])
+    velocities = prng.random([natoms, 3])
 
     # Insure CoM does not move
     v_com = np.sum(velocities, axis=0)/natoms
@@ -93,9 +92,9 @@ def set_initial_velocities(mytemp, particles, seed=None):
         particle.vel = velocity
 
     # Output as a sanity check
-    print(f" Temperature = {temp:f}\n Total Kinetic Energy = {0.5*np.sum(velocities**2):f}")
+    print(f' Temperature = {temp:f}\n Total Kinetic Energy = {0.5*np.sum(velocities**2):f}')
     np.set_printoptions(precision=4) # Make the CoM array cleaner by rounding
-    print(f" Centre-of-mass velocity = {v_com/natoms}\n")
+    print(f' Centre-of-mass velocity = {v_com/natoms}\n')
     np.set_printoptions(precision=8) # Set precision back to default
 
 

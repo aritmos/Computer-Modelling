@@ -9,6 +9,7 @@ import observables as obs
 from particle3D import Particle3D as p3d 
 import pbc 
 
+
 def force_LJ(pair_separation:np.array, l:float) -> np.array:
   '''
   Calculates the MIC-force (on particle i due to particle j)
@@ -16,21 +17,35 @@ def force_LJ(pair_separation:np.array, l:float) -> np.array:
   '''
   mic_pair_separation = pbc.minimum_image(pair_separation,l)
   r = np.linalg.norm(mic_pair_separation)
-  F = -48*(r**(-14)-0.5*r**(-8))*mic_pair_separation # -ve due to using r_ij in formula
+  F = -48*(r**(-14)-r**(-8)/2)*mic_pair_separation # -ve due to using r_ij in the formula
   return F
 
 
-def force_matrix(separation_matrix:np.ndarray, l:float) -> np.ndarray:
+def force_matrix(separation_array:np.ndarray, l:float) -> np.ndarray:
   '''
   Calculates the [N,N,3] matrix of forces F_ij 
   (force on p_i due to p_j) for i < j
   '''
-  N = len(separation_matrix)
+  N = len(separation_array)
   F_matrix = np.zeros([N,N,3])
   for i in range(N-1):
     for j in range(i+1,N):
-      F_matrix[i][j] = force_LJ(separation_matrix[i][j],l)
+      F_matrix[i][j] = force_LJ(separation_array[i][j],l)
   return F_matrix
+
+
+def net_forces(F_matrix: np.ndarray) -> np.ndarray:
+  N = len(F_matrix)
+  F_list = []
+  for i in range(N):
+    F_i = np.zeros(3)
+    for j in range(N):
+      if i < j:
+        F_i += F_matrix[i][j]
+      elif i > j:
+        F_i -= F_matrix[j][i]
+    F_list.append(F_i)
+  return F_list
 
 
 def main():
@@ -87,17 +102,17 @@ def main():
   print(log_kinetic_e, log_potential_e, log_total_e, log_msd, log_rdf)
   '''
 
-  # --- INITIALISATION -------------------------------------------------
+  # --- INITIALISATION --------------------------------------------------------
 
   print(f'Initialising {N} particles:')
   # Create the N particles with dummy pos and vel
   p3d_list = p3d.new_particles(N, mass)
   
   # Set initial conditions for particles
-  cell_length, full_lattice = mdu.set_initial_positions(density, p3d_list)
+  cell_length = mdu.set_initial_positions(density, p3d_list)[0]
   mdu.set_initial_velocities(temp, p3d_list)
 
-  # --- SIMULATION -------------------------------------------------------
+  # --- SIMULATION ------------------------------------------------------------
 
   # Open output files:
 
@@ -119,10 +134,11 @@ def main():
 
   t = 0.0
   total_steps = int(t_total / dt)
-  res = 1000
   if log_rdf:
-    # Histogram of 500 columns (distances from 0 to l*sqrt(3))
+    res = 1000
     histogram = np.zeros(res)
+
+  separation_array = p3d.pair_separations(p3d_list)
 
   # Print what gets logged and calculated
   print('Logged/Calculated Observables:')
@@ -133,16 +149,12 @@ def main():
   if log_msd: print('-Mean Squared Displacement')
   if log_rdf: print('-Radial Distribution Function')
 
-  # Simulation Loop
+  # Simulation Loop ===========================================================
   print('\nSimulating...')
 
   for time_step in range(total_steps):
 
-    # Calculate the Separation array
-    separation_matrix = p3d.pair_separations(p3d_list)
-
-
-    # --- Logging Observables ---------------------------------------------
+    # --- Logging Observables -------------------------------------------------
 
     # Trajectories:
     outfile_traj.write(f'{N}\n')
@@ -151,60 +163,41 @@ def main():
       outfile_traj.write(f'{particle}\n')
 
     # Energies:
+    sys_kinetic = p3d.sys_kinetic(p3d_list)
+    sys_potential = obs.potential_energy(separation_array)
+
     if log_kinetic_e:
-      outfile_kinetic_e.write(f'{t:.4} {p3d.sys_kinetic(p3d_list)}\n')
+      outfile_kinetic_e.write(f'{t:.3} {sys_kinetic:.4f}\n')
 
     if log_potential_e:
-      outfile_potential_e.write(f'{t:.4} {obs.potential_energy(separation_matrix)}\n')
+      outfile_potential_e.write(f'{t:.3f} {sys_potential:.4f}\n')
+
+    if log_total_e:
+      outfile_total_e.write(f'{t:.3f} {(sys_kinetic+sys_potential):.4f}\n')
 
     # Mean Squared Displacement:
-    if log_msd and (time_step % 10) == 0:
+    if log_msd and (time_step % 5) == 0:
       particle_positions = np.array([particle.pos for particle in p3d_list])
-      outfile_msd.write(f'{t:.4f}, {obs.msd(initial_positions, particle_positions, cell_length):.5f}\n')
+      outfile_msd.write(f'{t:.3f}, {obs.msd(initial_positions, particle_positions, cell_length):.5f}\n')
 
     # Radial Distribution Function:
-    if log_rdf and (time_step % 10) == 0:
-      histogram += obs.rdf(separation_matrix, cell_length, res)
+    if log_rdf and (time_step % 5) == 0:
+      histogram += obs.rdf(separation_array, cell_length, res)
 
-    # --- Particle Time Integrator ----------------------------------------
+    # --- Particle Time Integrator --------------------------------------------
 
     # calculate all the net forces for each particle
-    F_matrix = force_matrix(separation_matrix,cell_length)
-    
-    '''
-    print(f't = {t}\n') #%
-    print(f'separation:\n{separation_matrix}')
-    print(f'forces:\n{F_matrix}\n')
-    '''
-
-    F_list = []
-    for i in range(N):
-      F_i = np.zeros(3)
-      for j in range(N):
-        if i < j: 
-          F_i += F_matrix[i][j]
-        elif i > j: 
-          F_i -= F_matrix[j][i]
-      F_list.append(F_i)
-    
-    # print(f'f_list:\n{F_list}') #%
+    F_matrix = force_matrix(separation_array,cell_length)
+    F_list = net_forces(F_matrix)
 
     # update particle positions
     for i, particle in enumerate(p3d_list):
       particle.update_pos_2nd(cell_length,dt,F_list[i])
 
     # update forces
-    separation_matrix = p3d.pair_separations(p3d_list)
-    F_matrix = force_matrix(separation_matrix, cell_length)
-    F_new_list = []
-    for i in range(N):
-      F_i = np.zeros(3)
-      for j in range(N):
-        if i < j:
-          F_i += F_matrix[i][j]
-        elif i > j:
-          F_i -= F_matrix[j][i]
-      F_new_list.append(F_i)
+    separation_array = p3d.pair_separations(p3d_list)
+    F_matrix = force_matrix(separation_array, cell_length)
+    F_new_list = net_forces(F_matrix)
 
     # update particle velocities
     for i, particle in enumerate(p3d_list):
@@ -212,43 +205,27 @@ def main():
 
     # update time
     t += dt
-    
+  # ===========================================================================
 
   # Close all simulation files
-
   outfile_traj.close()
   if log_kinetic_e: outfile_kinetic_e.close()
   if log_potential_e: outfile_potential_e.close()
+  if log_total_e: outfile_total_e.close()
   if log_msd: outfile_msd.close()
 
   # --- POST SIMULATION CALCULATIONS --------------------------------
 
-  # Total Energy
-  if log_total_e:
-    outfile_kinetic_e = open('output\\energy_kinetic.txt','r')
-    outfile_potential_e = open('output\\energy_potential.txt','r')
-    kinetic_lines = outfile_kinetic_e.readlines()
-    potential_lines = outfile_potential_e.readlines()
-    for i in range(total_steps):
-      t, kinetic_e = kinetic_lines[i].split(' ')
-      potential_e = potential_lines[i].split(' ')[1]
-      outfile_total_e.write(f'{t}, {float(kinetic_e)+float(potential_e)}\n')
-
-    outfile_total_e.close()
 
   # Radial Distribution Function
   if log_rdf:
-    histogram = obs.rdf_normalize(histogram, cell_length, res)
+    histogram = obs.rdf_normalize(histogram, t_total)
     max_length = cell_length*(np.sqrt(3)/2+0.01)
     for i in range(res):
       outfile_rdf.write(f'{i*max_length/res:.4f}, {histogram[i]}\n')
-
     outfile_rdf.close()
 
   print(' done.')
-
-  
-
 
 # Execute main method, but only when directly invoked
 if __name__ == "__main__":
