@@ -9,11 +9,11 @@ def main(log_total_e,log_msd,log_rdf):
                            delimiter=' ', names=['t', 'E_K'])
     dataEP = np.genfromtxt('output\\energy_potential.txt',
                            delimiter=' ', names=['t', 'E_P'])
-    plt.title('Energies')
+    plt.title('Total Energy')
     
-    #plt.plot(dataET['t'],dataET['E'])
-    plt.plot(dataEK['t'], dataEK['E_K']-dataEK['E_K'][0])
-    plt.plot(dataEP['t'], -(dataEP['E_P']-dataEP['E_P'][0]))
+    plt.plot(dataET['t'],dataET['E'])
+    #plt.plot(dataEK['t'], dataEK['E_K']-dataEK['E_K'][0])
+    #plt.plot(dataEP['t'], -(dataEP['E_P']-dataEP['E_P'][0]))
     plt.show()
 
 
@@ -29,4 +29,4 @@ def main(log_total_e,log_msd,log_rdf):
     plt.title('RDF')
     plt.show()
 
-main(True,False,False)
+main(False,False,True)

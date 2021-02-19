@@ -13,7 +13,6 @@
 
 10/2
 - changed force_i to new_force_i 
-- made the force calculations not repeat calculations
 
 12/2
 - made pbc.mic output np.array instead of list
@@ -25,3 +24,6 @@
 
 18/2
 - added net_forces() to calculate the net forces list 
+
+19/2
+- added rdf and msd parameters in data.dat

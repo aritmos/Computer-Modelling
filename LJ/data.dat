@@ -3,14 +3,18 @@
 # dt
 0.005
 # total time
-10
+100
 # kinetic energy
 0
 # potential energy
 0
 # total energy
-1
+0
 # mean square displacement
 0
 # radial distribution function
-0
+1
+# calculate msd and rdf every __ timesteps
+10
+# rdf resolution
+1000
