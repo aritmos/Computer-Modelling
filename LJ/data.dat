@@ -1,9 +1,9 @@
 # N
-30
+32
 # dt
 0.005
 # total time
-100
+20
 # kinetic energy
 0
 # potential energy
@@ -17,4 +17,4 @@
 # calculate msd and rdf every __ timesteps
 10
 # rdf resolution
-1000
+5000

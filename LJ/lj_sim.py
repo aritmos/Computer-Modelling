@@ -48,6 +48,12 @@ def net_forces(F_matrix: np.ndarray) -> np.ndarray:
     F_list.append(F_i)
   return np.array(F_list)
 
+def mic_matrix(matrix: np.ndarray, l:float) -> np.ndarray:
+  N = len(matrix)
+  mic_matrix = np.zeros([N,N,3])
+  for i,j in zip(range(N),range(N)):
+    mic_matrix[i][j] = pbc.minimum_image(matrix[i][j], l)
+  return mic_matrix
 
 def main():
 
@@ -64,17 +70,17 @@ def main():
   data_file = sys.argv[2]
   traj_file = sys.argv[3] if len(sys.argv) == 4 else 'traj.xyz'
   
-  '''
+  
   setup_file = 'setup.dat'
   data_file = 'data.dat'
   traj_file = 'output\\traj.xyz'
-  '''
+  
 
   # Get information from input files
   with open(setup_file, 'r') as setup:
     lines = setup.readlines()
     try:
-      temp, mass, density = map(float, lines[1::2]) 
+      TEMP, MASS, DENSITY = map(float, lines[1::2]) 
     except: 
       print(f'error in {setup_file}\ncheck all variables are present and their types are correct')
       quit()
@@ -89,7 +95,7 @@ def main():
       # map '0' -> 0 -> False and '1' -> 1 -> True
       LOG_KINETIC_E, LOG_POTENTIAL_E, LOG_TOTAL_E, LOG_MSD, LOG_RDF = map(
           bool, map(int, lines[7:16:2])) 
-      t_multiple = float(lines[17])
+      t_multiple = int(lines[17])
       res = int(lines[19])
     except:
       print(f'error in {data_file}\ncheck all variables are present and their types are correct')
@@ -111,11 +117,11 @@ def main():
 
   print(f'Initialising {N} particles:')
   # Create the N particles with dummy pos and vel
-  p3d_list = p3d.new_particles(N, mass)
+  p3d_list = p3d.new_particles(N, MASS)
   
   # Set initial conditions for particles
-  cell_length = mdu.set_initial_positions(density, p3d_list)[0]
-  mdu.set_initial_velocities(temp, p3d_list)
+  cell_length = mdu.set_initial_positions(DENSITY, p3d_list)[0]
+  mdu.set_initial_velocities(TEMP, p3d_list)
 
   # --- SIMULATION ------------------------------------------------------------
 
@@ -134,6 +140,8 @@ def main():
     outfile_msd = open('output\\msd.csv','w')
   if LOG_RDF:
     histogram = np.zeros(res)
+    max_distance = cell_length*(np.sqrt(3)/2+0.001)
+    dr = max_distance/res
     outfile_rdf = open('output\\rdf.csv','w')
 
   # Initialize remaining objects for use in simulation
@@ -161,7 +169,7 @@ def main():
   # Simulation Loop ===========================================================
   print('\nSimulating...')
 
-  for time_step in tqdm(range(total_steps)):
+  for t_step in tqdm(range(total_steps)):
 
     # --- Logging Observables -------------------------------------------------
 
@@ -185,13 +193,13 @@ def main():
       outfile_total_e.write(f'{t:.3f} {(sys_kinetic+sys_potential):.4f}\n')
 
     # Mean Squared Displacement:
-    if LOG_MSD and (time_step % t_multiple) == 0:
+    if LOG_MSD and (t_step % t_multiple) == 0:
       particle_positions = np.array([particle.pos for particle in p3d_list])
       outfile_msd.write(f'{t:.3f}, {obs.msd(initial_positions, particle_positions, cell_length):.5f}\n')
 
     # Radial Distribution Function:
-    if LOG_RDF and (time_step % t_multiple) == 0:
-      histogram += obs.rdf(separation_array, cell_length, res)
+    if LOG_RDF and (t_step % t_multiple) == 0:
+      histogram += obs.rdf(separation_array, DENSITY, cell_length, res)
 
     # --- Particle Time Integrator --------------------------------------------
 
@@ -224,12 +232,14 @@ def main():
   # --- POST SIMULATION CALCULATIONS ------------------------------------------
 
 
-  # Radial Distribution Function
+  # Calculate and Normalize Radial Distribution Function
+  
   if LOG_RDF:
-    histogram = obs.rdf_normalize(histogram, t_total)
-    max_length = cell_length*(np.sqrt(3)/2+0.01)
+    t_count = total_steps/t_multiple
+    histogram = obs.rdf_normalize(histogram, t_count, dr, N, DENSITY)
+    max_length = cell_length*(np.sqrt(3)/2+0.001)
     for i in range(res):
-      outfile_rdf.write(f'{i*max_length/res:.4f}, {histogram[i]}\n')
+      outfile_rdf.write(f'{(i/res)*max_length:.4f}, {histogram[i]}\n')
     outfile_rdf.close()
 
   print(' done.')

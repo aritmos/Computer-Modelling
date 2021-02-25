@@ -14,10 +14,7 @@ res = 10
 histogram = np.zeros(res)
 histogram[int(x/l * res)] += 1
 
+for i,j in range(10):
+  print(i,j)
 
-def update_progress(progress):
-    print ('\r[{0}] {1}%'.format('#'*(progress/10), progress))
-
-for i in range(101):
-  update_progress(i)
-
+mic_matrix[i][j] = pair

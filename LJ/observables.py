@@ -18,20 +18,28 @@ def msd(initial_positions:np.array, current_positions:np.array, l:float) -> floa
   mic_separation_distances = np.linalg.norm(mic_separations, axis=1)
   return sum(mic_separation_distances**2)/N
 
-def rdf(particle_separations:np.ndarray, l:float, res:int) -> np.array:
+def rdf(particle_separations:np.ndarray, rho:float, l:float, res:int) -> np.array:
+  '''
+  Creates a histogram with the partice distances from p0
+  the histogram has range [0,l*sqrt(3)/2+dl]
+  and <res> number of columns
+  the values are r^-2, the remaining constant is added in the normalisation
+  '''
   N = len(particle_separations)
   histogram = np.zeros(res)
   max_distance = l*(np.sqrt(3)/2+0.001)
-  for i in range(1,N):
-    # Reference particle is p0
-    separation = particle_separations[0][i]
-    mic_separation = pbc.minimum_image(separation,l)
-    r = np.linalg.norm(mic_separation)
-    value = (N*4*np.pi*(r**2)*(max_distance/res))**-1
-    histogram[int((r / max_distance) * res)] += value
-
+  for i,j in zip(range(N),range(N)):
+    if i > j:
+      i, j = j, i
+    if i != j:
+      separation = particle_separations[i][j]
+      mic_separation = pbc.minimum_image(separation,l)
+      r = np.linalg.norm(mic_separation)
+      index = int((r / max_distance) * res)
+      histogram[index] += r**-2
   return histogram
 
-def rdf_normalize(histogram:np.array, total_t:int) -> np.array:
-  return histogram/(total_t/5)
+def rdf_normalize(hist:np.array, t_count:float, dr:float, N:int, rho:float) -> np.array:
+  C = (4*N*np.pi*rho*dr)**-1
+  return C*hist/t_count
 

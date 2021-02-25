@@ -27,3 +27,8 @@
 
 19/2
 - added rdf and msd parameters in data.dat
+
+25/2
+- changed how the coefficient is calculated for RDF (now done in rdf_norm)
+- made it so repeated variables inside RDF are calculated previously
+- added mic_matrix
