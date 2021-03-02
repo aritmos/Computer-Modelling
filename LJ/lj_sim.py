@@ -1,37 +1,41 @@
 
 # IMPORTS
 from os import sep, sys
-import numpy as np 
-import sys 
+import sys
 
-import mdutilities as mdu
-import observables as obs 
-from particle3D import Particle3D as p3d 
-import pbc 
+import numpy as np
 from tqdm import tqdm
 
+import mdutilities as mdu
+import observables as obs
+from particle3D import Particle3D as p3d
+import pbc
+import plotting
 
-def force_LJ(pair_separation:np.array, l:float) -> np.array:
+
+def force_LJ(mic_pair_separation:np.array) -> np.array:
   '''
   Calculates the MIC-force (on particle i due to particle j)
   given their real separation vector r_ij
   '''
-  mic_pair_separation = pbc.minimum_image(pair_separation,l)
   r = np.linalg.norm(mic_pair_separation)
-  F = -48*(r**(-14)-r**(-8)/2)*mic_pair_separation # -ve due to using r_ij in the formula
-  return F
+  if r > 3.5: # Implement cutoff radius
+    return np.zeros(3)
+  else:
+    F = -48*(r**(-14)-r**(-8)/2)*mic_pair_separation # -ve due to using r_ij in the formula
+    return F
 
 
-def force_matrix(separation_array:np.ndarray, l:float) -> np.ndarray:
+def force_matrix(mic_separations:np.ndarray) -> np.ndarray:
   '''
   Calculates the [N,N,3] matrix of forces F_ij 
   (force on p_i due to p_j) for i < j
   '''
-  N = len(separation_array)
+  N = len(mic_separations)
   F_matrix = np.zeros([N,N,3])
   for i in range(N-1):
     for j in range(i+1,N):
-      F_matrix[i][j] = force_LJ(separation_array[i][j],l)
+      F_matrix[i][j] = force_LJ(mic_separations[i][j])
   return F_matrix
 
 
@@ -48,11 +52,12 @@ def net_forces(F_matrix: np.ndarray) -> np.ndarray:
     F_list.append(F_i)
   return np.array(F_list)
 
-def mic_matrix(matrix: np.ndarray, l:float) -> np.ndarray:
+def mic_matrix(matrix:np.ndarray, l:float) -> np.ndarray:
   N = len(matrix)
   mic_matrix = np.zeros([N,N,3])
-  for i,j in zip(range(N),range(N)):
-    mic_matrix[i][j] = pbc.minimum_image(matrix[i][j], l)
+  for i in range(N):
+    for j in range(N):
+      mic_matrix[i][j] = pbc.minimum_image(matrix[i][j], l)
   return mic_matrix
 
 def main():
@@ -61,7 +66,7 @@ def main():
 
   print('---\nReading from input files...')
   # Read needed information from command line
-  
+  '''
   if len(sys.argv) not in [3,4]:
     print("Wrong number of arguments")
     print(f"Usage: {sys.argv[0]} <setup file> <data file> <OPTIONAL: output file>")
@@ -69,7 +74,7 @@ def main():
   setup_file = sys.argv[1]
   data_file = sys.argv[2]
   traj_file = sys.argv[3] if len(sys.argv) == 4 else 'traj.xyz'
-  
+  '''
   
   setup_file = 'setup.dat'
   data_file = 'data.dat'
@@ -150,7 +155,20 @@ def main():
   total_steps = int(t_total / dt)
 
   separation_array = p3d.pair_separations(p3d_list)
-  F_matrix = force_matrix(separation_array, cell_length)
+  mic_separations = mic_matrix(separation_array, cell_length)
+
+  # ===========================================================================
+  '''
+  separation_distances = np.linalg.norm(mic_separations, axis=2)
+  sep_list = np.reshape(separation_distances, (32*32,1))
+  sep_list = [i[0] for i in sep_list]
+  for i in set(sep_list):
+    print(sep_list.count(i),i)
+  '''
+
+  # ===========================================================================
+
+  F_matrix = force_matrix(mic_separations)
   F_new_list = net_forces(F_matrix)
 
   # Print what gets logged and calculated
@@ -165,6 +183,8 @@ def main():
   if LOG_RDF: 
     print(
       f'-Radial Distribution Function (Every {"" if t_multiple == 1 else t_multiple} step{"s" if t_multiple > 1 else ""}, with a resolution of {res})')
+  print(f'\nTotal simulation time: {t_total}')
+  print(f'Time step: {dt}')
 
   # Simulation Loop ===========================================================
   print('\nSimulating...')
@@ -181,7 +201,7 @@ def main():
 
     # Energies:
     sys_kinetic = p3d.sys_kinetic(p3d_list)
-    sys_potential = obs.potential_energy(separation_array, cell_length)
+    sys_potential = obs.potential_energy(mic_separations)
 
     if LOG_KINETIC_E:
       outfile_kinetic_e.write(f'{t:.3} {sys_kinetic:.4f}\n')
@@ -195,11 +215,13 @@ def main():
     # Mean Squared Displacement:
     if LOG_MSD and (t_step % t_multiple) == 0:
       particle_positions = np.array([particle.pos for particle in p3d_list])
-      outfile_msd.write(f'{t:.3f}, {obs.msd(initial_positions, particle_positions, cell_length):.5f}\n')
+      separations = particle_positions - initial_positions
+      mic_separation_list = np.array([pbc.minimum_image(i,cell_length) for i in separations])
+      outfile_msd.write(f'{t:.3f}, {obs.msd(mic_separation_list):.5f}\n')
 
     # Radial Distribution Function:
     if LOG_RDF and (t_step % t_multiple) == 0:
-      histogram += obs.rdf(separation_array, DENSITY, cell_length, res)
+      histogram += obs.rdf(mic_separations, max_distance, res)
 
     # --- Particle Time Integrator --------------------------------------------
 
@@ -210,7 +232,9 @@ def main():
 
     # update forces
     separation_array = p3d.pair_separations(p3d_list)
-    F_matrix = force_matrix(separation_array, cell_length)
+    mic_separations = mic_matrix(separation_array, cell_length)
+
+    F_matrix = force_matrix(mic_separations)
     F_new_list = net_forces(F_matrix)
 
     # update particle velocities
@@ -237,12 +261,13 @@ def main():
   if LOG_RDF:
     t_count = total_steps/t_multiple
     histogram = obs.rdf_normalize(histogram, t_count, dr, N, DENSITY)
-    max_length = cell_length*(np.sqrt(3)/2+0.001)
     for i in range(res):
-      outfile_rdf.write(f'{(i/res)*max_length:.4f}, {histogram[i]}\n')
+      outfile_rdf.write(f'{(i/res)*max_distance:.4f}, {histogram[i]}\n')
     outfile_rdf.close()
 
   print(' done.')
+
+  plotting.main(LOG_TOTAL_E,LOG_MSD,LOG_RDF)
 
 # Execute main method, but only when directly invoked
 if __name__ == "__main__":
