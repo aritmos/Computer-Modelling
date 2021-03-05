@@ -20,7 +20,7 @@ def minimum_image(x:np.array,l:float) -> np.array:
   """
   Minimum Image Convention
   :param x: point in R^3
-  :param l: cube length
+  :param l: cube side length
   :return: image of the point closest to the origin
   """
   x = periodic_image(x,l)

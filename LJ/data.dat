@@ -1,9 +1,9 @@
 # N
 32
 # dt
-0.01
+0.005
 # total time
-500
+50
 # kinetic energy
 0
 # potential energy
@@ -15,6 +15,6 @@
 # radial distribution function
 0
 # calculate msd and rdf every __ timesteps
-25
+5
 # rdf resolution
-500
+100
