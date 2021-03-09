@@ -1,3 +1,11 @@
+"""
+CompMod Final Project: (auxiliary module) Observables,
+a collection functions that calculate observables for the simulation.
+
+author: -redacted-
+
+"""
+
 import numpy as np
 import pbc
 

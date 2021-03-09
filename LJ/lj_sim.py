@@ -1,8 +1,37 @@
+"""
+CompMod Final Project: LJ_Sim, a program to simulate particles interacting
+via a Lennard-Jones potential with periodic boundary conditions in the shape
+of a cube. Can also calculate:
+- Kinetic Energy
+- Potential Energy
+- Total Energy
+- MSD
+- RDF
+
+This main program must be run from terminal along with two auxiliary files
+that set the parameters of the simulation, and optionally a third parameter
+to specify the name of the output file (defaults to traj.xyz)
+
+> py lj_sim.py setup.dat data.dat
+
+All inputs, outputs and variables within the code are in the following 
+reduced units:
+- length: r* = r / σ
+- energy: E* = E / ε
+- mass: m* = m / m0  (for particles of mass m0)
+- time: t* = t / τ where τ = σ*sqrt{m/ε}
+
+Where σ and ε are parameters in the LJ potential,
+which depend on the simulated matter.
+
+author: -redacted-
+
+"""
+
 # IMPORTS
 from os import sys
 
 import numpy as np
-from tqdm import tqdm
 
 import mdutilities as mdu
 import observables as obs
@@ -87,19 +116,14 @@ def main():
 
     print("---\nReading from input files")
     # Read needed information from command line
-    """
-    if len(sys.argv) not in [3,4]:
-      print("Wrong number of arguments")
-      print(f"Usage: {sys.argv[0]} <setup file> <data file> <OPTIONAL: output file>")
-      quit()
+    if len(sys.argv) not in [3, 4]:
+        print("Wrong number of arguments")
+        print(
+            f"Usage: {sys.argv[0]} <setup file> <data file> <OPTIONAL: output file>")
+        quit()
     setup_file = sys.argv[1]
     data_file = sys.argv[2]
     traj_file = sys.argv[3] if len(sys.argv) == 4 else 'traj.xyz'
-    """
-
-    setup_file = "setup.dat"
-    data_file = "data.dat"
-    traj_file = "output\\traj.xyz"
 
     # Get information from input files
     with open(setup_file, "r") as setup:
@@ -175,7 +199,7 @@ def main():
     print("Logged/Calculated Observables:")
 
     print("-Particle Trajectories")
-    outfile_traj = open(traj_file, "w")
+    outfile_traj = open(f"output\\{traj_file}", "w")
 
     if LOG_KINETIC_E:
         print("-Kinetic Energy")
@@ -196,7 +220,7 @@ def main():
     if LOG_RDF:
         print(
             f'-Radial Distribution Function\n   (Every '
-            f'{t_multiple} step{"s" if t_multiple > 1 else ""} and {res} columns)'
+            f'{t_multiple} step{"s" if t_multiple > 1 else ""} with {res} columns)'
         )
         histogram = np.zeros(res)
         max_distance = cell_length * (
@@ -211,7 +235,7 @@ def main():
     # Simulation Loop =========================================================
     print("\nSimulating...")
 
-    for t_step in tqdm(range(total_steps)):
+    for t_step in range(total_steps):
 
         # --- Logging Observables ---------------------------------------------
 
@@ -226,7 +250,7 @@ def main():
         sys_potential = obs.potential_energy(mic_separations)
 
         if LOG_KINETIC_E:
-            outfile_kinetic_e.write(f"{t:.3} {sys_kinetic:.4f}\n")
+            outfile_kinetic_e.write(f"{t:.3f} {sys_kinetic:.4f}\n")
 
         if LOG_POTENTIAL_E:
             outfile_potential_e.write(f"{t:.3f} {sys_potential:.4f}\n")
@@ -293,7 +317,7 @@ def main():
     print(" done.")
 
     # Plot the logged observables
-    plotting.main(LOG_TOTAL_E, LOG_MSD, LOG_RDF)
+    plotting.plot(LOG_TOTAL_E, LOG_MSD, LOG_RDF)
 
 
 # Execute main method, but only when directly invoked

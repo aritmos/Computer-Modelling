@@ -3,11 +3,11 @@
 # dt
 0.005
 # total time
-10
+50
 # kinetic energy
-0
+1
 # potential energy
-0
+1
 # total energy
 1
 # mean square displacement
@@ -15,6 +15,6 @@
 # radial distribution function
 1
 # calculate msd and rdf every __ timesteps
-1
-# rdf resolution
+5
+# rdf histogram, number of columns
 100

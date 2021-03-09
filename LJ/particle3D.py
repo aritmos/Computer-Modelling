@@ -1,14 +1,14 @@
 """
- CompMod Ex2: Particle3D, a class to describe point particles in 3D space
- An instance describes a particle in Euclidean 3D space: 
- velocity and position are [3] arrays
+CompMod Final Project: (auxiliary class) Particle3D, a class to describe point particles in 3D space. An instance describes a particle in Euclidean 3D space: 
+velocity and position are [3] arrays
 
-author: Sebastian Garcia (s1910157)
+author: -redacted-
 
 """
 
 import numpy as np
-import pbc 
+import pbc
+
 
 class Particle3D(object):
     """
@@ -35,7 +35,6 @@ class Particle3D(object):
     com_velocity - computes total mass and CoM velocity of a p3d list
     """
 
-
     def __init__(self, label: str, mass: float, pos: list, vel: list) -> None:
         """
         Initialises a particle in 3D space
@@ -46,18 +45,16 @@ class Particle3D(object):
         :param velocity: [3] float array w/ velocity
         """
         self.label = label
-        self.mass  = mass
-        self.pos   = np.array(pos)
-        self.vel   = np.array(vel)
-
+        self.mass = mass
+        self.pos = np.array(pos)
+        self.vel = np.array(vel)
 
     @staticmethod
-    def new_particles(N:int,mass:float) -> list:
+    def new_particles(N: int, mass: float) -> list:
         p3d_list = []
-        for i in range(0,N):
-            p3d_list.append(Particle3D(f'p{i}',mass,[0,0,0],[0,0,0]))
+        for i in range(0, N):
+            p3d_list.append(Particle3D(f'p{i}', mass, [0, 0, 0], [0, 0, 0]))
         return p3d_list
-        
 
     def __str__(self) -> str:
         """
@@ -65,7 +62,6 @@ class Particle3D(object):
         <label>  <x>  <y>  <z>
         """
         return f'{self.label} {self.pos[0]:.4f} {self.pos[1]:.4f} {self.pos[2]:.4f}'
-
 
     def kinetic_e(self) -> float:
         """
@@ -75,7 +71,6 @@ class Particle3D(object):
         """
         return 0.5*self.mass*np.sum(self.vel**2)
 
-
     def momentum(self) -> np.ndarray:
         """
         Returns the linear momentum of a Particle3D instance
@@ -83,8 +78,7 @@ class Particle3D(object):
         """
         return self.mass*self.vel
 
-
-    def update_pos_1st(self, dt:float) -> None:
+    def update_pos_1st(self, dt: float) -> None:
         """
         1st order position update
 
@@ -92,8 +86,7 @@ class Particle3D(object):
         """
         self.pos = self.pos + dt*self.vel
 
-
-    def update_pos_2nd(self, l:float, dt:float, force:np.array) -> None:
+    def update_pos_2nd(self, l: float, dt: float, force: np.array) -> None:
         """
         2nd order position update using PBC
 
@@ -113,7 +106,6 @@ class Particle3D(object):
         """
         self.vel = self.vel + dt*force/(self.mass)
 
-
     @staticmethod
     def sys_kinetic(p3d_list: 'list[Particle3D]') -> float:
         """
@@ -123,7 +115,6 @@ class Particle3D(object):
         :return: total kinetic energy of the system
         """
         return sum([particle.kinetic_e() for particle in p3d_list])
-
 
     @staticmethod
     def com_velocity(p3d_list: 'list[Particle3D]') -> tuple:
@@ -138,7 +129,7 @@ class Particle3D(object):
         return M, sum([particle.momentum() for particle in p3d_list])/M
 
     @staticmethod
-    def pair_separations(p3d_list:'list[Particle3D]') -> np.ndarray:
+    def pair_separations(p3d_list: 'list[Particle3D]') -> np.ndarray:
         """
         Computes an [N,N,3] array of particle separations where
 
@@ -148,8 +139,8 @@ class Particle3D(object):
         :return separations: [N,N,3] separation array 
         """
         N = len(p3d_list)
-        separations = np.zeros([N,N,3])
+        separations = np.zeros([N, N, 3])
         for i in range(N):
-            for j in range(i+1,N):
+            for j in range(i+1, N):
                 separations[i][j] = p3d_list[j].pos-p3d_list[i].pos
         return separations
