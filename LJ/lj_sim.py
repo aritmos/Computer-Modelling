@@ -1,28 +1,7 @@
 """
 CompMod Final Project: LJ_Sim, a program to simulate particles interacting
 via a Lennard-Jones potential with periodic boundary conditions in the shape
-of a cube. Can also calculate:
-- Kinetic Energy
-- Potential Energy
-- Total Energy
-- MSD
-- RDF
-
-This main program must be run from terminal along with two auxiliary files
-that set the parameters of the simulation, and optionally a third parameter
-to specify the name of the output file (defaults to traj.xyz)
-
-> py lj_sim.py setup.dat data.dat
-
-All inputs, outputs and variables within the code are in the following 
-reduced units:
-- length: r* = r / σ
-- energy: E* = E / ε
-- mass: m* = m / m0  (for particles of mass m0)
-- time: t* = t / τ where τ = σ*sqrt{m/ε}
-
-Where σ and ε are parameters in the LJ potential,
-which depend on the simulated matter.
+of a cube. The simulation can also calculate a variety of observables.
 
 author: -redacted-
 
