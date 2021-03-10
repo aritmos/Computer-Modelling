@@ -16,5 +16,5 @@
 1
 # calculate msd and rdf every __ timesteps
 5
-# rdf histogram, number of columns
+# rdf histogram: number of columns
 100

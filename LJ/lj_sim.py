@@ -241,7 +241,7 @@ def main():
         # Mean Squared Displacement:
         if LOG_MSD and (t_step % t_multiple) == 0:
             outfile_msd.write(
-                f"{t:.3f}, {obs.msd(initial_positions, p3d_list, cell_length):.5f}\n")
+                f"{t:.3f} {obs.msd(initial_positions, p3d_list, cell_length):.5f}\n")
 
         # Radial Distribution Function:
         if LOG_RDF and (t_step % t_multiple) == 0:
@@ -290,7 +290,8 @@ def main():
 
         # Write out the histogram to a file
         for i in range(res):
-            outfile_rdf.write(f"{(i/res)*max_distance:.4f}, {histogram[i]}\n")
+            outfile_rdf.write(
+                f"{(i/res)*max_distance:.4f} {histogram[i]:.4f}\n")
         outfile_rdf.close()
 
     print(" done.")

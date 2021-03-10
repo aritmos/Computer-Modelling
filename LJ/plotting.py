@@ -23,7 +23,7 @@ def plot(LOG_TOTAL_E, LOG_MSD, LOG_RDF):
 
     if LOG_MSD:
         data = np.genfromtxt(
-            'output\\msd.csv', delimiter=',', names=['t', 'MSD'])
+            'output\\msd.csv', delimiter=' ', names=['t', 'MSD'])
         plt.plot(data['t'], data['MSD'])
         plt.title('Mean Squared Displacement')
         plt.xlabel(r'Time ($\tau$)')
@@ -32,7 +32,7 @@ def plot(LOG_TOTAL_E, LOG_MSD, LOG_RDF):
 
     if LOG_RDF:
         data = np.genfromtxt(
-            'output\\rdf.csv', delimiter=',', names=['t', 'RDF'])
+            'output\\rdf.csv', delimiter=' ', names=['t', 'RDF'])
         plt.plot(data['t'], data['RDF'])
         plt.title('Radial Distribution Function')
         plt.xlabel(r'Distance ($r$)')

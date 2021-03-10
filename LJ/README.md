@@ -6,22 +6,18 @@ periodic boundary conditions.
 author: -redacted-
 -------------------------------------------------------------------------------
 ## Requirements:
-- numpy 
+- numpy library
 
 ## Use:
 The main program <lj_sim.py> must be run from terminal along with two auxiliary
 files that set the parameters of the simulation, and optionally a third parameter
 to specify the name of the output file (defaults to traj.xyz if not specified)
 
-> py lj_sim.py setup.dat data.dat
+For example, when simulating the gas phase:
 
-Although the name of the input files does not matter, their formatting does. 
-Do not change the order of any variables as compared to the provided input files.
-Simply modify the uncommented lines to vary the simulation parameters. 
-The calculated observables are selected within the equivalent of 'data.dat',
- in order to calculate/log the observable give it a value of 1, if not, then 0.
-All other numerical simulation parameters are in their expected type, 
-either int or float respectively. 
+> py lj_sim.py setup_gas.dat data_gas.dat traj_gas.xyz
+
+Note that the order of the files matters.
 
 ## Reduced Units:
 All inputs, outputs and variables within the code are in the following 
@@ -33,6 +29,50 @@ reduced units:
 
 Where σ and ε are parameters in the LJ potential.
 (these depend on what is being simulated)
+
+## Input files:
+
+lj_sim.py requires two existing files, which contain the parameters for the simulation.
+Using a generalized form for naming convention in the previous section, we will call these 
+<setup.dat> and <data.dat> respectively.
+One can duplicate and modify the existing files <setup.dat> and <data.dat>,
+as long as the formatting is not changed, as the variables are set by looking at hardcoded
+line numbers within their respective files.
+
+Every odd line has a comment that specifies what parameter the number on the line below refers to.
+The value of each parameter should be the only thing in its respective line.
+In the case of disabling and enabling observables use 0 and 1 respectively.
+
+### setup.dat
+This file contains the variables to set the properties of the material that is simulated.
+It contains the temperature, mass and density. 
+Since the program works in reduced units the mass should be always set to 1.
+
+### data.dat
+This file contains the variables to set the properties of the simulation.
+It contains the number of simulated particles, the total simulation time, the simulation 
+time step, and which observables to log.
+
+Observables: potential energy, kinetic energy, total energy
+(total energy will override potential and kinetic if enabled), MSD and RDF.
+
+Furthermore there are also variables to choose every how many time steps we want the MSD
+and RDF to be calculated, and how many columns the RDF histogram should have.
+
+## Outputs
+
+All outputs will be inside the <output> subdirectory. The simulation will always at least
+create the trajectory file, which by default is <traj.xyz>, any of the other enabled observables
+will also be saved here. The format for the trajectory file is XYZ compliant in order for it to be
+visualized in a program such as VMD.
+
+The files for the observables (except RDF) have the following structure, at each line:
+
+> time value
+
+The RDF instead has:
+
+> distance value
 
 ## Changelog: (from original project document)
 
@@ -65,6 +105,7 @@ Where σ and ε are parameters in the LJ potential.
 
 19/2
 - added rdf and msd parameters in data.dat
+- added plotting module to plot observables
 
 25/2
 - changed how the coefficient is calculated for RDF (now done in rdf_norm)
