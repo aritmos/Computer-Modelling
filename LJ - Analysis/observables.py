@@ -14,7 +14,7 @@ def potential_energy(mic_separations: np.ndarray) -> float:
     N = len(mic_separations)
     for i in range(N-1):
         for j in range(i+1, N):
-            r = np.linalg.norm(mic_separations[i][j])
+            r = np.linalg.norm(mic_separations[i, j])
             if r > 3.5:  # Implement cutoff radius
                 total_potential_energy -= 0.00217
             else:

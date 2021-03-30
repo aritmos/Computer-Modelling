@@ -1,5 +1,6 @@
 # IMPORTS
 from os import sys
+import os
 
 import numpy as np
 from tqdm import tqdm
@@ -10,6 +11,8 @@ from particle3D import Particle3D as p3d
 import pbc
 import plotting
 
+
+# FUNCTIONS
 
 def force_LJ(mic_pair_separation: np.array) -> np.array:
     """
@@ -81,6 +84,10 @@ def mic_matrix(matrix: np.ndarray, l: float) -> np.ndarray:
     return mic_matrix
 
 
+def str_float(s):
+    return str(s).replace('.', '_')
+
+
 def main():
 
     # SETTING VARIABLES AND PARAMETERS ========================================
@@ -99,7 +106,6 @@ def main():
 
     setup_file = "setup.dat"
     data_file = "data.dat"
-    traj_file = "output\\traj.xyz"
 
     # Get information from input files
     with open(setup_file, "r") as setup:
@@ -174,25 +180,33 @@ def main():
 
     print("Logged/Calculated Observables:")
 
+    # Save each simulation in its own subfolder
+    simulation_folder = f"output\\{len(p3d_list)}-{str_float(TEMP)}-{str_float(DENSITY)}-{str_float(t_total)}-{str_float(dt)}"
+
+    if not os.path.exists(simulation_folder):
+        os.makedirs(simulation_folder)
+
     print("-Particle Trajectories")
-    outfile_traj = open(traj_file, "w")
+    outfile_traj = open(f"{simulation_folder}\\traj.xyz", "w")
 
     if LOG_KINETIC_E:
         print("-Kinetic Energy")
-        outfile_kinetic_e = open("output\\energy_kinetic.txt", "w")
+        outfile_kinetic_e = open(
+            f"{simulation_folder}\\energy_kinetic.txt", "w")
     if LOG_POTENTIAL_E:
         print("-Potential Energy")
-        outfile_potential_e = open("output\\energy_potential.txt", "w")
+        outfile_potential_e = open(
+            f"{simulation_folder}\\energy_potential.txt", "w")
     if LOG_TOTAL_E:
         print("-Total Energy")
-        outfile_total_e = open("output\\energy_total.csv", "w")
+        outfile_total_e = open(f"{simulation_folder}\\energy_total.csv", "w")
     if LOG_MSD:
         print(
             f'-Mean Squared Displacement\n   (Every '
             f'{t_multiple} step{"s" if t_multiple > 1 else ""})'
         )
         initial_positions = np.array([particle.pos for particle in p3d_list])
-        outfile_msd = open("output\\msd.csv", "w")
+        outfile_msd = open(f"{simulation_folder}\\msd.csv", "w")
     if LOG_RDF:
         print(
             f'-Radial Distribution Function\n   (Every '
@@ -203,7 +217,7 @@ def main():
             np.sqrt(3) / 2 + 0.001
         )  # added extra distance to avoid floating point rounding overflows
         dr = max_distance / res
-        outfile_rdf = open("output\\rdf.csv", "w")
+        outfile_rdf = open(f"{simulation_folder}\\rdf.csv", "w")
 
     print(f"\nTotal simulation time: {t_total}")
     print(f"Time step: {dt}")
@@ -226,7 +240,7 @@ def main():
         sys_potential = obs.potential_energy(mic_separations)
 
         if LOG_KINETIC_E:
-            outfile_kinetic_e.write(f"{t:.3} {sys_kinetic:.4f}\n")
+            outfile_kinetic_e.write(f"{t:.3f} {sys_kinetic:.4f}\n")
 
         if LOG_POTENTIAL_E:
             outfile_potential_e.write(f"{t:.3f} {sys_potential:.4f}\n")
@@ -259,8 +273,8 @@ def main():
         F_new_list = net_forces(F_matrix)
 
         # update particle velocities
+        F_avg = 0.5 * (F_list + F_new_list)
         for i, particle in enumerate(p3d_list):
-            F_avg = 0.5 * (F_list + F_new_list)
             particle.update_vel(dt, F_avg[i])
 
         # update time
@@ -293,7 +307,7 @@ def main():
     print(" done.")
 
     # Plot the logged observables
-    plotting.main(LOG_TOTAL_E, LOG_MSD, LOG_RDF)
+    plotting.main(simulation_folder, [LOG_TOTAL_E, LOG_MSD, LOG_RDF])
 
 
 # Execute main method, but only when directly invoked

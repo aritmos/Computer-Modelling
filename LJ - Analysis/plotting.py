@@ -2,28 +2,30 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 
-def main(LOG_TOTAL_E, LOG_MSD, LOG_RDF):
+def main(directory, booleans):
+
+    LOG_TOTAL_E, LOG_MSD, LOG_RDF = booleans
 
     if LOG_TOTAL_E:
-        dataET = np.genfromtxt('output\\energy_total.csv',
-                               delimiter=' ', names=['t', 'E'])
+        dataET = np.genfromtxt(
+            f'{directory}\\energy_total.csv', delimiter=' ', names=['t', 'E'])
         plt.title('Total Energy')
         plt.plot(dataET['t'], dataET['E'])
-        plt.show()
+        plt.savefig(f'{directory}\\ENERGY.png')
+        plt.close()
 
     if LOG_MSD:
         data = np.genfromtxt(
-            'output\\msd.csv', delimiter=',', names=['t', 'MSD'])
+            f'{directory}\\msd.csv', delimiter=',', names=['t', 'MSD'])
         plt.plot(data['t'], data['MSD'])
         plt.title('MSD')
-        plt.show()
+        plt.savefig(f'{directory}\\MSD.png')
+        plt.close()
 
     if LOG_RDF:
         data = np.genfromtxt(
-            'output\\rdf.csv', delimiter=',', names=['t', 'RDF'])
+            f'{directory}\\rdf.csv', delimiter=',', names=['t', 'RDF'])
         plt.plot(data['t'], data['RDF'])
         plt.title('RDF')
-        plt.show()
-
-
-# main(True, False, False)
+        plt.savefig(f'{directory}\\RDF.png')
+        plt.close()
